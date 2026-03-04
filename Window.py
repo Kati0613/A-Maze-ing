@@ -1,6 +1,6 @@
 from mlx import Mlx
 import time
-from schlang import draw_schlang as schlang
+#from schlang import draw_schlang as schlang
 
 
 class Window():
@@ -8,7 +8,8 @@ class Window():
     def __init__(self, output = None):
         self.mlx = Mlx()
         self.ptr = self.mlx.mlx_init()
-        self.i = 0
+        self.x = 0
+        self.y = 0
 
         validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
 
@@ -31,18 +32,17 @@ class Window():
         print(self.mlx_img_data)
         self.image_data = self.mlx_img_data[0]
         self.line_length = self.mlx_img_data[2]
-        self.image_data[:] = bytes([0,0,0,255]) * (len(self.image_data)//4)
-        self.image_data[0:self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-        self.image_data[self.line_length: 2*self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-        self.image_data[2*self.line_length: 3*self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-        self.image_data[20*self.line_length:21*self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-        self.image_data[21*self.line_length:22*self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-        self.image_data[22*self.line_length:23*self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-        #self.image_data[y*self.line_length:23*self.line_length] = bytes([255,255,255,255]) * (self.mlx_img_data[2] // 4)
-
-        self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 300, 300)
+        # self.image_data[:] = bytes([0, 0, 0, 255]) * (len(self.image_data)//4)
+        # self.image_data[0:self.line_length] = bytes([255 , 255, 255, 255]) * (self.mlx_img_data[2] // 4)
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 560, 140)
         self.mlx.mlx_hook(self.window, 33, 0, self.close, None)
         self.mlx.mlx_key_hook(self.window, self.key_event, None)
+
+        file = open("output.txt")
+        self.lines = file.readlines()
+        width_img = len(lines[0])
+        height_img = len(lines) - 4
+        #       pixel = format(int("3", 16), "04b")
 
         #schlang(self.mlx, self.window, self.ptr)
 
@@ -50,15 +50,37 @@ class Window():
         if key == 65307:  #bash xav do sprawdzenia
             self.close(None)
     
-    def draw_window(self, param):
-        if self.i < 800:
-            self.image_data[27*self.line_length + 4*self.i:27*self.line_length+4*(self.i + 1)] = bytes([255,255,255,255])
-            self.image_data[28*self.line_length + 4*self.i:28*self.line_length+4*(self.i + 1)] = bytes([255,255,255,255])
-            self.image_data[29*self.line_length + 4*self.i:29*self.line_length+4*(self.i + 1)] = bytes([255,255,255,255])
-            #self.image_data[23*self.line_length:23*self.line_length+4*i] = bytes([255,255,255,255])
-            self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 300, 300)
-            self.i += 1
+    def draw_pixel(self, param):
+        first_line = self.lines[0]
+        for px in first_line:
+            pixel = format(int(px, 16), "04b")
+
+            self.image_data[0*self.line_length + 4*self.x: 6 * (0*self.line_length + 4 * (self.x + 1))] = 6 * bytes([255,255,255,255])
+            self.image_data[self.y*self.line_length + 4*0: 4 * (self.y*self.line_length + 4 * (0 + 1))] = bytes([255,255,255,255])
+            self.image_data[self.y*self.line_length + 5*4: self.y*self.line_length + 4 * (5 + 1)] = bytes([255,255,255,255])
+
+
+            
+
+
+
     
+    def draw_window(self, param):
+        if self.x < 799 and self.y < 799:
+            self.image_data[0*self.line_length + 4*self.x:
+                            0*self.line_length + 4 * (self.x + 1)] = bytes([255,255,255,255])
+            self.image_data[799*self.line_length + 4*self.x:
+                            799*self.line_length + 4 * (self.x + 1)] = bytes([255,255,255,255])
+        if self.y < 799:
+            self.image_data[self.y*self.line_length + 4*0:
+                            self.y*self.line_length + 4 * (0 + 1)] = bytes([255,255,255,255])
+            self.image_data[self.y*self.line_length + 4*798:
+                            self.y*self.line_length + 4 * (798 + 1)] = bytes([255,255,255,255])
+            self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 560, 140)
+            self.x += 1
+            self.y += 1
+    
+    #def make_schlang_bigger(self):
     def close(self, param):
         self.mlx.mlx_destroy_window(self.ptr, self.window)
         self.mlx.mlx_loop_exit(self.ptr) #zamyka okno

@@ -7,4 +7,6 @@ pixel = format(int("3", 16), "04b")
 for line in lines[:-3]:
     for c in line[:-1]:
         pixel = format(int(c, 16), "04b")
+        print(pixel)
+        break
         #self.image_data[:4] = bytes([0,0,0,255]) 0011 west south east north
