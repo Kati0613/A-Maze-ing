@@ -70,7 +70,7 @@ class Window():
                 if pixel[2] == "1":
                     self.image_data[(self.y+size - 1)*self.line_length + 4 * self.x: (self.y+ size - 1)*self.line_length + 4*(self.x + size)] = size * bytes([255,255,255,255])#dolna sciana
                 self.x += size
-            self.y += size
+            self.y += size - 1
         print(self.x)
         print(self.y)
         self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 560, 140)
