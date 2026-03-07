@@ -27,6 +27,7 @@ for y, line in enumerate(lines[:-4]):
     horizontal_lines.append(x_line)
     vertical_lines.append(y_line)
 horizontal_lines.append(bottom_line)
+
         #self.image_data[:4] = bytes([0,0,0,255]) 0011 west south east north
 print(horizontal_lines)
 print(vertical_lines)

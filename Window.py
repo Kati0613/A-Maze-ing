@@ -75,6 +75,10 @@ class Window():
                 self.x += self.size  
             #break
             self.y += self.size - 2
+        for line in horizontal_line:
+            for x in line:
+                if x == "1":
+                self.image_data[]
         print(self.x)
         print(self.y)
         self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 560, 140)
