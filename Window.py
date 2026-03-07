@@ -28,12 +28,12 @@ class Window():
 
         self.output = output
 
-        file = open("output2.txt")
+        file = open("output.txt")
         self.lines = file.readlines()
         width_img = len(self.lines[0]) - 1
         height_img = len(self.lines) - 4
-        self.size = 180
-        self.img_ptr = self.mlx.mlx_new_image(self.ptr, width_img * self.size, height_img * self.size) # 800 to piksele czyli jeden piksel to 4 bity czyli jeden bajt
+        self.size = 32
+        self.img_ptr = self.mlx.mlx_new_image(self.ptr, width_img * self.size, height_img * (self.size)) # 800 to piksele czyli jeden piksel to 4 bity czyli jeden bajt
         self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
         print(width_img)
         print(height_img)
@@ -59,7 +59,6 @@ class Window():
             for px in line[:-1]:
                 pixel = format(int(px,16),"04b")
                 #print(pixel)
-
                 if pixel[0] == "1":
                     self.image_data[self.y*self.line_length + 4 * self.x: self.y*self.line_length + 4*(self.x + self.size)] = self.size * bytes([255,255,255,255])#gorna sciana
                 for i in range(0, self.size - 1):
@@ -73,7 +72,7 @@ class Window():
                 print((self.y + i) * self.line_length + 4 * self.x)
                 print("Prawa sciana:")
                 print((self.y + i) * self.line_length + 4* (self.x + self.size - 1))
-                self.x += self.size
+                self.x += self.size  
             #break
             self.y += self.size - 2
         print(self.x)
