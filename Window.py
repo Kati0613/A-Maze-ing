@@ -55,9 +55,15 @@ class Window():
             self.close(None)
     
     def draw_pixel(self, pixel = None):
-        for line in self.lines[:-4]:
+        start_parameters = self.lines[-3]
+        end_parameters = self.lines[-2]
+        startx = int(start_parameters[:start_parameters.find(",")])
+        starty = int(start_parameters[start_parameters.find(",") + 1:])
+        endx = int(end_parameters[:end_parameters.find(",")])
+        endy = int(end_parameters[end_parameters.find(",") + 1:])
+        for idxy,line in enumerate(self.lines[:-4]):
             self.x = 0
-            for px in line[:-1]:
+            for idxx,px in enumerate(line[:-1]):
                 pixel = format(int(px,16),"04b")
                 if pixel[0] == "1":
                     self.image_data[self.y*self.line_length + 4 * self.x: self.y*self.line_length + 4*(self.x + self.size)] = self.size * bytes([255,255,255,255])#gorna sciana
@@ -66,16 +72,21 @@ class Window():
                         self.image_data[(self.y + i) * self.line_length + 4 * self.x: (self.y + i) * self.line_length + 4 *(self.x + 1)] = bytes([255,255,255,255])#lewa sciana
                     if pixel[1] == "1":
                         self.image_data[(self.y + i) * self.line_length + 4* (self.x + self.size - 1): (self.y + i) * self.line_length + 4 *(self.x + self.size)] = bytes([255,255,255,255])#prawa sciana
-                        print(f"Prawa scianka : { (self.y + i) * self.line_length + 4 *(self.x + self.size)}")
                 if pixel[2] == "1":
                     self.image_data[(self.y+self.size - 1)*self.line_length + 4 * self.x: (self.y+ self.size - 1)*self.line_length + 4*(self.x + self.size)] = self.size * bytes([255,255,255,255])#dolna sciana
                     #print(f"Dolna scianka : {self.y+self.size - 1}")
                 if pixel == "1111":
-                     for i in range(1, self.size - 2):
-                         self.image_data[(self.y + i) * self.line_length + 4 * self.x: (self.y + i) * self.line_length + 4 *(self.x + self.size - 2)] = (self.size - 2) * bytes([255,255,255,50])
-                self.x += self.size  
+                    for i in range(2, self.size - 2):
+                        self.image_data[(self.y + i) * self.line_length + 4 * (self.x + 2): (self.y + i) * self.line_length + 4 *(self.x + self.size - 2)] = (self.size - 4) * bytes([255,255,255,10])
+                if idxx == startx and idxy == starty:
+                    for i in range(2, self.size - 2):
+                        self.image_data[(self.y + i) * self.line_length + 4 * (self.x + 2): (self.y + i) * self.line_length + 4 *(self.x + self.size - 2)] = (self.size - 4) * bytes([0,0,255,255])
+                if idxx == endx and idxy == endy:
+                    for i in range(2, self.size - 2):
+                        self.image_data[(self.y + i) * self.line_length + 4 * (self.x + 2): (self.y + i) * self.line_length + 4 *(self.x + self.size - 2)] = (self.size - 4) * bytes([255,0,0,255])
+                self.x += self.size - 1 #to not have double walls -1
             #break
-            self.y += self.size - 1
+            self.y += self.size - 1 #to not have double walls -1 
         print(self.x)
         print(f"Y equals: {self.y}")
         self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 560, 140)
@@ -85,19 +96,26 @@ class Window():
         first_line = self.lines[0]
         for px in first_line:
             pixel = format(int(px,16),)
+    
+    def button(self):
+        self.btn_ptr = self.mlx.mlx_new_image(self.ptr, 100, 50)
+        self.mlx_btn_data = self.mlx.mlx_get_data_addr(self.btn_ptr)
+        self.btn_data = self.mlx_btn_data[0]
+        width_btn = self.mlx_btn_data[2]
+
+
+        self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.btn_ptr, 1500, 800)
  
     def draw_window(self, param):
-        #print((self.width_img * self.height_img - 2) * size)
-        #print(32 * (self.width_img * self.height_img - 2))
         if self.i < self.x:
             self.image_data[4*self.i: 4 * (self.i + 1)] = bytes([255, 255, 255, 255])
             self.image_data[(self.y) * self.line_length + 4*self.i: (self.y) * self.line_length + 4 * (self.i + 1)] = bytes([255, 255, 255, 255])
         if self.z < self.y:
             self.image_data[self.z*self.line_length + 4*0:
                             self.z*self.line_length + 4 * (0 + 1)] =  bytes([255, 255, 255, 255])
-            self.image_data[self.z*self.line_length + 4*799:
-                            self.z*self.line_length + 4 * (799 + 1)] = bytes([255, 255, 255, 255])
-        self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 560, 140)
+            self.image_data[self.z*self.line_length + 4*self.x:
+                            self.z*self.line_length + 4 * (self.x + 1)] = bytes([255, 255, 255, 255])
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 560, 140)
         self.i += 1 #temporary x
         self.z += 1 #temporary 
     
@@ -108,6 +126,7 @@ class Window():
 
     def show(self):
         self.draw_pixel()
+        self.button()
         #self.mlx.mlx_loop_hook(self.ptr, self.draw_pixel, None)
         self.mlx.mlx_loop_hook(self.ptr, self.draw_window, None)
         #self.mlx.mlx_loop_hook(self.ptr, schlang(self.mlx, self.window, self.ptr), self)
