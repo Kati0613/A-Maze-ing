@@ -21,7 +21,6 @@ class Window():
         print(width)
         print(height)
 
-
         self.window = self.mlx.mlx_new_window(
             self.ptr, width, height, "whoores"
             )
@@ -54,7 +53,7 @@ class Window():
         if key == 65307:  #bash xav do sprawdzenia
             self.close(None)
     
-    def draw_pixel(self, pixel = None):
+    def draw_maze(self, pixel = None):
         start_parameters = self.lines[-3]
         end_parameters = self.lines[-2]
         startx = int(start_parameters[:start_parameters.find(",")])
@@ -91,20 +90,19 @@ class Window():
         print(f"Y equals: {self.y}")
         self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.img_ptr, 560, 140)
     
-    def draw_maze(self, param):
-        #self.draw_window()
-        first_line = self.lines[0]
-        for px in first_line:
-            pixel = format(int(px,16),)
+    # def draw_maze(self, param):
+    #     #self.draw_window()
+    #     first_line = self.lines[0]
+    #     for px in first_line:
+    #         pixel = format(int(px,16),)
     
     def button(self):
-        self.btn_ptr = self.mlx.mlx_new_image(self.ptr, 100, 50)
+        self.btn_ptr = self.mlx.mlx_new_image(self.ptr, 100, 100)
         self.mlx_btn_data = self.mlx.mlx_get_data_addr(self.btn_ptr)
         self.btn_data = self.mlx_btn_data[0]
-        width_btn = self.mlx_btn_data[2]
+        self.btn_data[0:4 * 100 * 100] = 100 * 100 * bytes([0, 255, 255, 255])
 
-
-        self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.btn_ptr, 1500, 800)
+        self.mlx.mlx_put_image_to_window( self.ptr, self.window, self.btn_ptr, 1600, 800)
  
     def draw_window(self, param):
         if self.i < self.x:
@@ -118,14 +116,13 @@ class Window():
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 560, 140)
         self.i += 1 #temporary x
         self.z += 1 #temporary 
-    
-    #def make_schlang_bigger(self):
+
     def close(self, param):
         self.mlx.mlx_destroy_window(self.ptr, self.window)
         self.mlx.mlx_loop_exit(self.ptr) #zamyka okno
 
     def show(self):
-        self.draw_pixel()
+        self.draw_maze()
         self.button()
         #self.mlx.mlx_loop_hook(self.ptr, self.draw_pixel, None)
         self.mlx.mlx_loop_hook(self.ptr, self.draw_window, None)
