@@ -1,0 +1,120 @@
+from mlx import Mlx
+
+class Maze():
+
+#output na pliki
+    def __init__(self, mlx, ptr, window):
+        self.mlx = mlx
+        self.window = window
+        self.ptr = ptr
+
+        self.x = 0
+        self.y = 0
+        self.i = 0
+        self.z = 0
+
+        file = open("output.txt")
+        self.lines = file.readlines()
+        self.width_img = len(self.lines[0]) - 1
+        self.height_img = len(self.lines) - 4
+        self.size = 32
+        self.img_ptr = self.mlx.mlx_new_image(
+            self.ptr, self.width_img * self.size,
+            (self.height_img + 1) * (self.size - 1)
+            )# 800 to piksele czyli jeden piksel to 4 bity czyli jeden bajt
+        self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
+        self.image_data = self.mlx_img_data[0]
+        self.line_length = self.mlx_img_data[2]
+        self.mlx.mlx_put_image_to_window(
+            self.ptr, self.window, self.img_ptr, 560, 140)
+    
+    def draw_maze(self, pixel=None):
+        start_parameters = self.lines[-3]
+        end_parameters = self.lines[-2]
+        startx = int(start_parameters[:start_parameters.find(",")])
+        starty = int(start_parameters[start_parameters.find(",") + 1:])
+        endx = int(end_parameters[:end_parameters.find(",")])
+        endy = int(end_parameters[end_parameters.find(",") + 1:])
+        for idxy, line in enumerate(self.lines[:-4]):
+            self.x = 0
+            for idxx, px in enumerate(line[:-1]):
+                pixel = format(int(px, 16), "04b")
+                if pixel[0] == "1":
+                    self.image_data[self.y*self.line_length + 4 * self.x:
+                                    self.y*self.line_length
+                                    + 4*(self.x + self.size)
+                                    ] = self.size * bytes([255, 255, 255, 255])#gorna sciana
+                for i in range(0, self.size - 1):
+                    if pixel[3] == "1":
+                        self.image_data[
+                            (self.y + i) * self.line_length + 4 * self.x:
+                            (self.y + i) * self.line_length + 4 * (self.x + 1)
+                            ] = bytes([255, 255, 255, 255])#lewa sciana
+                    if pixel[1] == "1":
+                        self.image_data[
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + self.size - 1):
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + self.size)
+                            ] = bytes([255, 255, 255, 255])#prawa sciana
+                if pixel[2] == "1":
+                    self.image_data[
+                        (self.y+self.size - 1)*self.line_length + 4 * self.x:
+                        (self.y + self.size - 1)*self.line_length
+                        + 4*(self.x + self.size)
+                        ] = self.size * bytes([255, 255, 255, 255])#dolna sciana
+                    #print(f"Dolna scianka : {self.y+self.size - 1}")
+                if pixel == "1111":
+                    for i in range(2, self.size - 2):
+                        self.image_data[
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + 2):
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + self.size - 2)
+                            ] = (self.size - 4) * bytes([255, 255, 255, 10])
+                if idxx == startx and idxy == starty:
+                    for i in range(2, self.size - 2):
+                        self.image_data[
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + 2):
+                            (self.y + i) * self.line_length
+                            + 4 *(self.x + self.size - 2)
+                            ] = (self.size - 4) * bytes([0, 0, 255, 255])
+                if idxx == endx and idxy == endy:
+                    for i in range(2, self.size - 2):
+                        self.image_data[
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + 2):
+                            (self.y + i) * self.line_length
+                            + 4 * (self.x + self.size - 2)
+                            ] = (self.size - 4) * bytes([255, 0, 0, 255])
+                self.x += self.size - 1 #to not have double walls -1
+            #break
+            self.y += self.size - 1 #to not have double walls -1 
+        print(self.x)
+        print(f"Y equals: {self.y}")
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window,
+                                         self.img_ptr, 560, 140)
+
+    def draw_borders(self, param):
+        if self.i < self.x:
+            self.image_data[
+                4*self.i: 4 * (self.i + 1)
+                ] = bytes([255, 255, 255, 255])
+            self.image_data[
+                (self.y) * self.line_length + 4*self.i:
+                (self.y) * self.line_length + 4 * (self.i + 1)
+                ] = bytes([255, 255, 255, 255])
+        if self.z < self.y:
+            self.image_data[
+                self.z*self.line_length + 4*0:
+                self.z*self.line_length + 4 * (0 + 1)
+                ] = bytes([255, 255, 255, 255])
+            self.image_data[
+                self.z*self.line_length + 4*self.x:
+                self.z*self.line_length + 4 * (self.x + 1)
+                ] = bytes([255, 255, 255, 255])
+        self.mlx.mlx_put_image_to_window(
+            self.ptr, self.window, self.img_ptr, 560, 140)
+        self.i += 1 #temporary x
+        self.z += 1 #temporary 
