@@ -28,7 +28,7 @@ class Maze():
         self.mlx.mlx_put_image_to_window(
             self.ptr, self.window, self.img_ptr, 560, 140)
     
-    def draw_maze(self, pixel=None):
+    def draw_maze(self, color=bytes([255, 255, 255, 255]), pixel=None):
         start_parameters = self.lines[-3]
         end_parameters = self.lines[-2]
         startx = int(start_parameters[:start_parameters.find(",")])
@@ -96,11 +96,11 @@ class Maze():
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
                                          self.img_ptr, 560, 140)
 
-    def draw_borders(self, param):
+    def draw_borders(self, color=bytes([255, 255, 255, 255])):
         if self.i < self.x:
             self.image_data[
                 4*self.i: 4 * (self.i + 1)
-                ] = bytes([255, 255, 255, 255])
+                ] = color
             self.image_data[
                 (self.y) * self.line_length + 4*self.i:
                 (self.y) * self.line_length + 4 * (self.i + 1)
