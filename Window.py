@@ -10,7 +10,7 @@ class Window():
         self.ptr = self.mlx.mlx_init()
 
         validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
-        self.color = bytes([255, 255, 255, 255])
+        self.color = [0, 255, 255, 255]
 
         if validator != 0:
             print("Błąd przy pobieraniu rozmiaru ekranu")
@@ -33,8 +33,6 @@ class Window():
     def key_event(self, key, param):
         if key == 65307:  #bash xav do sprawdzenia
             self.close(None)
-        #if key == 65362:
-            #self.window.des
 
         #print(key)
     
@@ -50,14 +48,9 @@ class Window():
         print(img_array[2])
         self.btn_data[0:4 * 100 * 100] = 100 * 100 * bytes([0, 255, 255, 255])
 
-        #print(img_data[0])
-        #print(img_data[2])
         img_data = self.mlx.mlx_get_data_addr(img_array[0])
         self.color_data = img_data[0]
         self.color_lenth = img_data[2]
-        #print(list(img_data[0][248:320]))
-
-        #img_data[0][0:4] = bytes([0, 255, 255, 255])
 
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, img_array[0], 1600, 800)
 
@@ -66,13 +59,15 @@ class Window():
         if ((x >= 1600 and x < 1834) or (y >= 800 and y < 999)): #baisicly window width i window height + img width i img height
             pixelx = x - 1600
             pixely = y - 800
-            print(list(self.color_data[pixely * self.color_lenth +  4 * pixelx: pixely * self.color_lenth +  4 * (pixelx + 1)]))
             color = list(self.color_data[pixely * self.color_lenth +  4 * pixelx: pixely * self.color_lenth +  4 * (pixelx + 1)])
 
-            if color != bytes([255, 255, 255, 255]):
+            if self.color != color:
                 self.maze.i = 0
                 self.maze.z = 0
                 self.color = color
+                self.maze.draw_borders(self.color)
+                self.maze.draw_maze(self.color)
+                print("Click")
 
 
     def close(self, param):
@@ -82,9 +77,7 @@ class Window():
     def show(self):
         self.maze.draw_maze()
         self.button()
-        #self.mlx.mlx_loop_hook(self.ptr, self.draw_pixel, None)
         self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_borders, self.color)
-        #self.mlx.mlx_loop_hook(self.ptr, schlang(self.mlx, self.window, self.ptr), self)
         self.mlx.mlx_loop(self.ptr)
 
 

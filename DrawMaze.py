@@ -13,6 +13,8 @@ class Maze():
         self.i = 0
         self.z = 0
 
+        self.color = bytes([0, 255, 255, 255])
+
         file = open("output.txt")
         self.lines = file.readlines()
         self.width_img = len(self.lines[0]) - 1
@@ -29,6 +31,7 @@ class Maze():
             self.ptr, self.window, self.img_ptr, 560, 140)
     
     def draw_maze(self, color=bytes([255, 255, 255, 255]), pixel=None):
+        color = bytes(color)
         start_parameters = self.lines[-3]
         end_parameters = self.lines[-2]
         startx = int(start_parameters[:start_parameters.find(",")])
@@ -43,26 +46,26 @@ class Maze():
                     self.image_data[self.y*self.line_length + 4 * self.x:
                                     self.y*self.line_length
                                     + 4*(self.x + self.size)
-                                    ] = self.size * bytes([255, 255, 255, 255])#gorna sciana
+                                    ] = self.size * self.color#gorna sciana
                 for i in range(0, self.size - 1):
                     if pixel[3] == "1":
                         self.image_data[
                             (self.y + i) * self.line_length + 4 * self.x:
                             (self.y + i) * self.line_length + 4 * (self.x + 1)
-                            ] = bytes([255, 255, 255, 255])#lewa sciana
+                            ] = self.color#lewa sciana
                     if pixel[1] == "1":
                         self.image_data[
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 1):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size)
-                            ] = bytes([255, 255, 255, 255])#prawa sciana
+                            ] = self.color#prawa sciana
                 if pixel[2] == "1":
                     self.image_data[
                         (self.y+self.size - 1)*self.line_length + 4 * self.x:
                         (self.y + self.size - 1)*self.line_length
                         + 4*(self.x + self.size)
-                        ] = self.size * bytes([255, 255, 255, 255])#dolna sciana
+                        ] = self.size * self.color#dolna sciana
                     #print(f"Dolna scianka : {self.y+self.size - 1}")
                 if pixel == "1111":
                     for i in range(2, self.size - 2):
@@ -71,7 +74,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * bytes([255, 255, 255, 10])
+                            ] = (self.size - 4) * self.color
                 if idxx == startx and idxy == starty:
                     for i in range(2, self.size - 2):
                         self.image_data[
@@ -79,7 +82,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 *(self.x + self.size - 2)
-                            ] = (self.size - 4) * bytes([0, 0, 255, 255])
+                            ] = (self.size - 4) * self.color
                 if idxx == endx and idxy == endy:
                     for i in range(2, self.size - 2):
                         self.image_data[
@@ -87,7 +90,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * bytes([255, 0, 0, 255])
+                            ] = (self.size - 4) * self.color
                 self.x += self.size - 1 #to not have double walls -1
             #break
             self.y += self.size - 1 #to not have double walls -1 
@@ -97,23 +100,28 @@ class Maze():
                                          self.img_ptr, 560, 140)
 
     def draw_borders(self, color=bytes([255, 255, 255, 255])):
+        color = bytes(color)
+        if color != self.color:
+            self.i = 0
+            self.z = 0
+            self.color = color
         if self.i < self.x:
             self.image_data[
                 4*self.i: 4 * (self.i + 1)
-                ] = color
+                ] = self.color
             self.image_data[
                 (self.y) * self.line_length + 4*self.i:
                 (self.y) * self.line_length + 4 * (self.i + 1)
-                ] = bytes([255, 255, 255, 255])
+                ] = self.color
         if self.z < self.y:
             self.image_data[
                 self.z*self.line_length + 4*0:
                 self.z*self.line_length + 4 * (0 + 1)
-                ] = bytes([255, 255, 255, 255])
+                ] = self.color
             self.image_data[
                 self.z*self.line_length + 4*self.x:
                 self.z*self.line_length + 4 * (self.x + 1)
-                ] = bytes([255, 255, 255, 255])
+                ] = self.color
         self.mlx.mlx_put_image_to_window(
             self.ptr, self.window, self.img_ptr, 560, 140)
         self.i += 1 #temporary x
