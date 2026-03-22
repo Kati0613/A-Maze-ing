@@ -23,6 +23,7 @@ class Window():
             )
 
         self.output = output
+        self.path_show = False
 
         self.maze = Maze(self.mlx, self.ptr, self.window)
 
@@ -33,8 +34,16 @@ class Window():
     def key_event(self, key, param):
         if key == 65307:  #bash xav do sprawdzenia
             self.close(None)
+        elif key == 1485:
+            if not self.path_show:
+                self.path_show = True
+                self.maze.draw_path(bytes([0, 255, 255, 255]))
+            else:
+                self.path_show = False
+                self.maze.draw_path(bytes([0, 0, 0, 255]))
 
-        #print(key)
+
+        print(key)
     
 
 
@@ -77,6 +86,7 @@ class Window():
 
     def show(self):
         self.maze.draw_maze()
+        #self.maze.draw_path()
         self.button()
         self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_borders, self.color)
         self.mlx.mlx_loop(self.ptr)

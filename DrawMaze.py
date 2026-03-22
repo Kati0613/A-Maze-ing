@@ -35,10 +35,10 @@ class Maze():
         print(len(color), color)
         start_parameters = self.lines[-3]
         end_parameters = self.lines[-2]
-        startx = int(start_parameters[:start_parameters.find(",")])
-        starty = int(start_parameters[start_parameters.find(",") + 1:])
-        endx = int(end_parameters[:end_parameters.find(",")])
-        endy = int(end_parameters[end_parameters.find(",") + 1:])
+        self.startx = int(start_parameters[:start_parameters.find(",")])
+        self.starty = int(start_parameters[start_parameters.find(",") + 1:])
+        self.endx = int(end_parameters[:end_parameters.find(",")])
+        self.endy = int(end_parameters[end_parameters.find(",") + 1:])
         self.y = 0
         for idxy, line in enumerate(self.lines[:-4]):
             self.x = 0
@@ -77,7 +77,7 @@ class Maze():
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 2)
                             ] = (self.size - 4) * color
-                if idxx == startx and idxy == starty:
+                if idxx == self.startx and idxy == self.starty:
                     for i in range(2, self.size - 2):
                         self.image_data[
                             (self.y + i) * self.line_length
@@ -85,7 +85,7 @@ class Maze():
                             (self.y + i) * self.line_length
                             + 4 *(self.x + self.size - 2)
                             ] = (self.size - 4) * bytes([0, 255, 255, 255])
-                if idxx == endx and idxy == endy:
+                if idxx == self.endx and idxy == self.endy:
                     for i in range(2, self.size - 2):
                         self.image_data[
                             (self.y + i) * self.line_length
@@ -127,4 +127,24 @@ class Maze():
         self.mlx.mlx_put_image_to_window(
             self.ptr, self.window, self.img_ptr, 560, 140)
         self.i += 1 #temporary x
-        self.z += 1 #temporary 
+        self.z += 1 #temporary
+    
+    def draw_path(self, color = bytes([0, 255, 255, 255])):
+        y = self.starty * (self.size - 1)
+        x = self.startx * (self.size - 1)
+
+        coords = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}
+        for path in self.lines[-1].strip():
+            print(f"y = {y} x = {x}")
+            y += coords[path][1] * (self.size - 1)
+            x += coords[path][0] * (self.size - 1)
+            print(f"y = {y} x = {x}")
+            for i in range(3, self.size - 2):
+                self.image_data[
+                    (y + i) * self.line_length
+                    + 4 * (x + 2):
+                    (y + i) * self.line_length
+                    + 4 * (x + self.size - 3)
+                    ] = (self.size - 5) * color
+            self.mlx.mlx_put_image_to_window(
+            self.ptr, self.window, self.img_ptr, 560, 140)
