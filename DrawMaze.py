@@ -32,12 +32,14 @@ class Maze():
     
     def draw_maze(self, color=bytes([255, 255, 255, 255]), pixel=None):
         color = bytes(color)
+        print(len(color), color)
         start_parameters = self.lines[-3]
         end_parameters = self.lines[-2]
         startx = int(start_parameters[:start_parameters.find(",")])
         starty = int(start_parameters[start_parameters.find(",") + 1:])
         endx = int(end_parameters[:end_parameters.find(",")])
         endy = int(end_parameters[end_parameters.find(",") + 1:])
+        self.y = 0
         for idxy, line in enumerate(self.lines[:-4]):
             self.x = 0
             for idxx, px in enumerate(line[:-1]):
@@ -46,26 +48,26 @@ class Maze():
                     self.image_data[self.y*self.line_length + 4 * self.x:
                                     self.y*self.line_length
                                     + 4*(self.x + self.size)
-                                    ] = self.size * self.color#gorna sciana
+                                    ] = self.size * color#gorna sciana
                 for i in range(0, self.size - 1):
                     if pixel[3] == "1":
                         self.image_data[
                             (self.y + i) * self.line_length + 4 * self.x:
                             (self.y + i) * self.line_length + 4 * (self.x + 1)
-                            ] = self.color#lewa sciana
+                            ] = color#lewa sciana
                     if pixel[1] == "1":
                         self.image_data[
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 1):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size)
-                            ] = self.color#prawa sciana
+                            ] = color#prawa sciana
                 if pixel[2] == "1":
                     self.image_data[
                         (self.y+self.size - 1)*self.line_length + 4 * self.x:
                         (self.y + self.size - 1)*self.line_length
                         + 4*(self.x + self.size)
-                        ] = self.size * self.color#dolna sciana
+                        ] = self.size * color#dolna sciana
                     #print(f"Dolna scianka : {self.y+self.size - 1}")
                 if pixel == "1111":
                     for i in range(2, self.size - 2):
@@ -74,7 +76,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * self.color
+                            ] = (self.size - 4) * color
                 if idxx == startx and idxy == starty:
                     for i in range(2, self.size - 2):
                         self.image_data[
@@ -82,7 +84,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 *(self.x + self.size - 2)
-                            ] = (self.size - 4) * self.color
+                            ] = (self.size - 4) * bytes([0, 255, 255, 255])
                 if idxx == endx and idxy == endy:
                     for i in range(2, self.size - 2):
                         self.image_data[
@@ -90,7 +92,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * self.color
+                            ] = (self.size - 4) * bytes([255, 0, 255, 255])
                 self.x += self.size - 1 #to not have double walls -1
             #break
             self.y += self.size - 1 #to not have double walls -1 

@@ -10,7 +10,7 @@ class Window():
         self.ptr = self.mlx.mlx_init()
 
         validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
-        self.color = [0, 255, 255, 255]
+        self.color = bytes([0, 255, 255, 255])
 
         if validator != 0:
             print("Błąd przy pobieraniu rozmiaru ekranu")
@@ -49,17 +49,17 @@ class Window():
         self.btn_data[0:4 * 100 * 100] = 100 * 100 * bytes([0, 255, 255, 255])
 
         img_data = self.mlx.mlx_get_data_addr(img_array[0])
-        self.color_data = img_data[0]
+        self.color_data = bytes(img_data[0])
         self.color_lenth = img_data[2]
 
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, img_array[0], 1600, 800)
 
     def mouse_click(self, button, x, y, param):
         print(f"Mouse on {x} and {y} address. Clicked {button}")
-        if ((x >= 1600 and x < 1834) or (y >= 800 and y < 999)): #baisicly window width i window height + img width i img height
+        if ((x >= 1600 and x < 1834) and (y >= 800 and y < 999)): #baisicly window width i window height + img width i img height
             pixelx = x - 1600
             pixely = y - 800
-            color = list(self.color_data[pixely * self.color_lenth +  4 * pixelx: pixely * self.color_lenth +  4 * (pixelx + 1)])
+            color = self.color_data[pixely * self.color_lenth +  4 * pixelx: pixely * self.color_lenth +  4 * (pixelx + 1)]
 
             if self.color != color:
                 self.maze.i = 0
@@ -67,6 +67,7 @@ class Window():
                 self.color = color
                 self.maze.draw_borders(self.color)
                 self.maze.draw_maze(self.color)
+                print("LEN COLOR:", len(color))
                 print("Click")
 
 
