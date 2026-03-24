@@ -2,6 +2,7 @@ from mlx import Mlx
 import time
 #from schlang import draw_schlang as schlang
 from DrawMaze import Maze
+from Button import Button
 
 class Window():
 
@@ -41,43 +42,31 @@ class Window():
             else:
                 self.path_show = False
                 self.maze.draw_path(bytes([0, 0, 0, 255]))
+                self.button()
 
 
         print(key)
-    
-
-
-    def button(self):
-        self.btn_ptr = self.mlx.mlx_new_image(self.ptr, 100, 100)
-        self.mlx_btn_data = self.mlx.mlx_get_data_addr(self.btn_ptr)
-        self.btn_data = self.mlx_btn_data[0]
-        img_array = self.mlx.mlx_png_file_to_image(self.ptr, "image.png")
-
-        print(img_array[1])
-        print(img_array[2])
-        self.btn_data[0:4 * 100 * 100] = 100 * 100 * bytes([0, 255, 255, 255])
-
-        img_data = self.mlx.mlx_get_data_addr(img_array[0])
-        self.color_data = bytes(img_data[0])
-        self.color_lenth = img_data[2]
-
-        self.mlx.mlx_put_image_to_window(self.ptr, self.window, img_array[0], 1600, 800)
 
     def mouse_click(self, button, x, y, param):
         print(f"Mouse on {x} and {y} address. Clicked {button}")
         if ((x >= 1600 and x < 1834) and (y >= 800 and y < 999)): #baisicly window width i window height + img width i img height
             pixelx = x - 1600
             pixely = y - 800
-            color = self.color_data[pixely * self.color_lenth +  4 * pixelx: pixely * self.color_lenth +  4 * (pixelx + 1)]
+            color = self.button.color_data[pixely * self.button.color_lenth +  4 * pixelx: pixely * self.button.color_lenth +  4 * (pixelx + 1)]
 
-            if self.color != color:
-                self.maze.i = 0
-                self.maze.z = 0
-                self.color = color
-                self.maze.draw_borders(self.color)
-                self.maze.draw_maze(self.color)
-                print("LEN COLOR:", len(color))
-                print("Click")
+            if button == 1:
+                if self.color != color and color != bytes([0, 0, 0, 0]):
+                    self.maze.i = 0
+                    self.maze.z = 0
+                    self.color = color
+                    self.maze.draw_borders(self.color)
+                    self.maze.draw_maze(self.color)
+                    self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.button.image_data_ptr, 1600, 800)
+                    print("COLOR:", list(color))
+                    print("Click")
+            elif button == 3:
+                if color != bytes([0, 0, 0, 0]):
+                    self.maze.draw_fourtytwo(color)
 
 
     def close(self, param):
@@ -86,9 +75,9 @@ class Window():
 
     def show(self):
         self.maze.draw_maze()
+        self.button = Button(self.ptr, self.window, self.mlx)
         #self.maze.draw_path()
-        self.button()
-        self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_borders, self.color)
+        #self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_borders, self.color)
         self.mlx.mlx_loop(self.ptr)
 
 

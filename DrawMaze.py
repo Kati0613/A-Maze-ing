@@ -7,6 +7,8 @@ class Maze():
         self.mlx = mlx
         self.window = window
         self.ptr = ptr
+        self.fourtytwo = []
+        self.fourtytwo_color = bytes([0, 255, 255, 255])
 
         self.x = 0
         self.y = 0
@@ -32,7 +34,7 @@ class Maze():
     
     def draw_maze(self, color=bytes([255, 255, 255, 255]), pixel=None):
         color = bytes(color)
-        print(len(color), color)
+        print(len(self.image_data))
         start_parameters = self.lines[-3]
         end_parameters = self.lines[-2]
         self.startx = int(start_parameters[:start_parameters.find(",")])
@@ -40,6 +42,7 @@ class Maze():
         self.endx = int(end_parameters[:end_parameters.find(",")])
         self.endy = int(end_parameters[end_parameters.find(",") + 1:])
         self.y = 0
+        self.image_data[:] = len(self.image_data) // 4 * bytes([0,0,0,255])
         for idxy, line in enumerate(self.lines[:-4]):
             self.x = 0
             for idxx, px in enumerate(line[:-1]):
@@ -70,13 +73,14 @@ class Maze():
                         ] = self.size * color#dolna sciana
                     #print(f"Dolna scianka : {self.y+self.size - 1}")
                 if pixel == "1111":
+                    self.fourtytwo.append([self.x, self.y])
                     for i in range(2, self.size - 2):
                         self.image_data[
                             (self.y + i) * self.line_length
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * color
+                            ] = (self.size - 4) * self.fourtytwo_color
                 if idxx == self.startx and idxy == self.starty:
                     for i in range(2, self.size - 2):
                         self.image_data[
@@ -84,7 +88,7 @@ class Maze():
                             + 4 * (self.x + 2):
                             (self.y + i) * self.line_length
                             + 4 *(self.x + self.size - 2)
-                            ] = (self.size - 4) * bytes([0, 255, 255, 255])
+                            ] = (self.size - 4) * bytes([255, 255, 0, 255])
                 if idxx == self.endx and idxy == self.endy:
                     for i in range(2, self.size - 2):
                         self.image_data[
@@ -98,6 +102,7 @@ class Maze():
             self.y += self.size - 1 #to not have double walls -1 
         print(self.x)
         print(f"Y equals: {self.y}")
+        self.mlx.mlx_clear_window(self.ptr, self.window)
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
                                          self.img_ptr, 560, 140)
 
@@ -128,6 +133,24 @@ class Maze():
             self.ptr, self.window, self.img_ptr, 560, 140)
         self.i += 1 #temporary x
         self.z += 1 #temporary
+    
+    def draw_fourtytwo(self, color=bytes([255, 255, 255, 255])):
+        for coor in self.fourtytwo:
+            self.fourtytwo_color = color
+            y = coor[1]
+            x = coor[0]
+            for i in range(2, self.size - 2):
+                        self.image_data[
+                            (y + i) * self.line_length
+                            + 4 * (x + 2):
+                            (y + i) * self.line_length
+                            + 4 * (x + self.size - 2)
+                            ] = (self.size - 4) * color
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window,
+                                         self.img_ptr, 560, 140)
+        
+
+
     
     def draw_path(self, color = bytes([0, 255, 255, 255])):
         y = self.starty * (self.size - 1)
