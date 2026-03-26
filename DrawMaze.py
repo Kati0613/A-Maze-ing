@@ -3,7 +3,7 @@ from mlx import Mlx
 class Maze():
 
 #output na pliki
-    def __init__(self, mlx, ptr, window):
+    def __init__(self, mlx, ptr, window, output):
         self.mlx = mlx
         self.window = window
         self.ptr = ptr
@@ -17,7 +17,7 @@ class Maze():
 
         self.color = bytes([0, 255, 255, 255])
 
-        file = open("output.txt")
+        file = open(output)
         self.lines = file.readlines()
         self.width_img = len(self.lines[0]) - 1
         self.height_img = len(self.lines) - 4
@@ -47,25 +47,25 @@ class Maze():
             self.x = 0
             for idxx, px in enumerate(line[:-1]):
                 pixel = format(int(px, 16), "04b")
-                if pixel[0] == "1":
+                if pixel[3] == "1":
                     self.image_data[self.y*self.line_length + 4 * self.x:
                                     self.y*self.line_length
                                     + 4*(self.x + self.size)
                                     ] = self.size * color#gorna sciana
                 for i in range(0, self.size - 1):
-                    if pixel[3] == "1":
+                    if pixel[0] == "1":
                         self.image_data[
                             (self.y + i) * self.line_length + 4 * self.x:
                             (self.y + i) * self.line_length + 4 * (self.x + 1)
                             ] = color#lewa sciana
-                    if pixel[1] == "1":
+                    if pixel[2] == "1":
                         self.image_data[
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size - 1):
                             (self.y + i) * self.line_length
                             + 4 * (self.x + self.size)
                             ] = color#prawa sciana
-                if pixel[2] == "1":
+                if pixel[1] == "1":
                     self.image_data[
                         (self.y+self.size - 1)*self.line_length + 4 * self.x:
                         (self.y + self.size - 1)*self.line_length
@@ -158,10 +158,8 @@ class Maze():
 
         coords = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}
         for path in self.lines[-1].strip():
-            print(f"y = {y} x = {x}")
             y += coords[path][1] * (self.size - 1)
             x += coords[path][0] * (self.size - 1)
-            print(f"y = {y} x = {x}")
             for i in range(3, self.size - 2):
                 self.image_data[
                     (y + i) * self.line_length
