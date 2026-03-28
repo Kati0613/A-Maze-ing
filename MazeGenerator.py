@@ -1,11 +1,12 @@
 from random import Random
 from typing import List, Union, Set, Generator, Optional, Tuple
+import Maze
 
 class MazeGenerator:
     def __init__(self, seed: int, width: int, height: int, is_perfect: bool, entry: int, exit: int) -> None:
         self.maze_random = Random()
         self.maze_random.seed(seed)
-        self.maze_map: List[Union[bool, int]] = [0xF] * (width * height)
+        self.maze_map: List[int] = [0xF] * (width * height)
         self.width = width
         self.height = height
         self.remaining: Set[int] = set(range(self.width * self.height))
@@ -14,6 +15,25 @@ class MazeGenerator:
         self.entry = entry
         self.exit = exit
         self.pattern: Set[int] = set()
+
+    def cerate_maze(self, maze: Maze, seed: Optional[int] = None):
+        if seed is None:
+            seed = randint(0, 1000)
+        
+        self.maze_random = Random()
+        self.maze_random.seed(seed)
+        self.width = maze.width
+        self.height = maze.height
+        self.is_perfect = maze.is_perfect
+        self.entry = entry
+        self.exit = exit
+        self.maze_map: List[int] = [0xF] * (self.width * self.height)
+        self.remaining: Set[int] = set(range(self.width * self.height))
+        self.pattern: Set[int] = set()
+
+        self.put_42()
+        self.wilson()
+        self.save_output()
 
 
     def put_42(self):
@@ -81,7 +101,7 @@ class MazeGenerator:
             self.trim_wall(path[i], path[i + 1])
             self.remaining.discard(path[i])
         self.remaining.discard(path[-1])
-        print("remaining: ", self.remaining)
+
         while self.remaining:
             start = self.maze_random.choice(list(self.remaining))
             path = self.random_walk(start)
@@ -91,12 +111,13 @@ class MazeGenerator:
                 self.remaining.discard(path[i])
 
             self.remaining.discard(path[-1])
+        
         self.print_maze()
-        print(self.remaining)
-    
+
+
     def random_walk(self, start: int):
         current_cell = start
-        
+
         path = list()
         path.append(start)
         while current_cell in self.remaining:
@@ -168,7 +189,7 @@ class MazeGenerator:
 
 
 if __name__ == "__main__":
-    maze = MazeGenerator(3, 21, 21, True, 0, 440)
+    maze = MazeGenerator(67, 21, 21, True, 0, 440)
     maze.put_42()
     maze.print_maze()
     maze.wilson()
