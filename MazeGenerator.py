@@ -1,22 +1,22 @@
-from random import Random
+from random import Random, randint
 from typing import List, Union, Set, Generator, Optional, Tuple
-import Maze
+from Maze import Maze
 
 class MazeGenerator:
-    def __init__(self, seed: int, width: int, height: int, is_perfect: bool, entry: int, exit: int) -> None:
-        self.maze_random = Random()
-        self.maze_random.seed(seed)
-        self.maze_map: List[int] = [0xF] * (width * height)
-        self.width = width
-        self.height = height
-        self.remaining: Set[int] = set(range(self.width * self.height))
-        self.seed = seed
-        self.is_perfect = is_perfect
-        self.entry = entry
-        self.exit = exit
-        self.pattern: Set[int] = set()
+    # def __init__(self, seed: int, width: int, height: int, is_perfect: bool, entry: int, exit: int) -> None:
+    #     self.maze_random = Random()
+    #     self.maze_random.seed(seed)
+    #     self.maze_map: List[int] = [0xF] * (width * height)
+    #     self.width = width
+    #     self.height = height
+    #     self.remaining: Set[int] = set(range(self.width * self.height))
+    #     self.seed = seed
+    #     self.is_perfect = is_perfect
+    #     self.entry = entry
+    #     self.exit = exit
+    #     self.pattern: Set[int] = set()
 
-    def cerate_maze(self, maze: Maze, seed: Optional[int] = None):
+    def cerate_maze(self, maze: Maze, seed: Optional[int] = None) -> str:
         if seed is None:
             seed = randint(0, 1000)
         
@@ -25,8 +25,8 @@ class MazeGenerator:
         self.width = maze.width
         self.height = maze.height
         self.is_perfect = maze.is_perfect
-        self.entry = entry
-        self.exit = exit
+        self.entry = maze.entry
+        self.exit = maze.exit
         self.maze_map: List[int] = [0xF] * (self.width * self.height)
         self.remaining: Set[int] = set(range(self.width * self.height))
         self.pattern: Set[int] = set()
@@ -34,8 +34,14 @@ class MazeGenerator:
         self.put_42()
         self.wilson()
         self.save_output()
+        return self.prep_maze_str()
 
-
+    def prep_maze_str(self) -> str:
+        maze_str: str = ""
+        for cell in self.maze_map:
+            maze_str += str(bin(cell))[2:]
+        return maze_str
+    
     def put_42(self):
         x = self.width // 2
         y = self.height // 2
@@ -113,6 +119,7 @@ class MazeGenerator:
             self.remaining.discard(path[-1])
         
         self.print_maze()
+        print(self.prep_maze_str())
 
 
     def random_walk(self, start: int):
@@ -189,8 +196,6 @@ class MazeGenerator:
 
 
 if __name__ == "__main__":
-    maze = MazeGenerator(67, 21, 21, True, 0, 440)
-    maze.put_42()
-    maze.print_maze()
-    maze.wilson()
-    maze.save_output()
+    maze_gen = MazeGenerator()
+    maze = Maze(21, 21, (0,0), (21,21), True)
+    maze_gen.cerate_maze(maze)
