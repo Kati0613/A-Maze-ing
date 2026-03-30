@@ -3,19 +3,6 @@ from typing import List, Union, Set, Generator, Optional, Tuple
 from Maze import Maze
 
 class MazeGenerator:
-    # def __init__(self, seed: int, width: int, height: int, is_perfect: bool, entry: int, exit: int) -> None:
-    #     self.maze_random = Random()
-    #     self.maze_random.seed(seed)
-    #     self.maze_map: List[int] = [0xF] * (width * height)
-    #     self.width = width
-    #     self.height = height
-    #     self.remaining: Set[int] = set(range(self.width * self.height))
-    #     self.seed = seed
-    #     self.is_perfect = is_perfect
-    #     self.entry = entry
-    #     self.exit = exit
-    #     self.pattern: Set[int] = set()
-
     def cerate_maze(self, maze: Maze, seed: Optional[int] = None) -> str:
         if seed is None:
             seed = randint(0, 1000)
@@ -34,11 +21,7 @@ class MazeGenerator:
         self.put_42()
         self.wilson()
         self.save_output()
-<<<<<<< HEAD
         return self.prep_maze_str()
-=======
-        #zwroc string hex albo bin
->>>>>>> 22e13cd (cos)
 
     def prep_maze_str(self) -> str:
         maze_str: str = ""
@@ -106,7 +89,6 @@ class MazeGenerator:
         self.clear_42_pattern()
         #self.remaining.remove(start)
         path = self.random_walk(start)
-        print("full path: ", path)
         for i in range(len(path) - 1):
             self.trim_wall(path[i], path[i + 1])
             self.remaining.discard(path[i])
@@ -115,7 +97,6 @@ class MazeGenerator:
         while self.remaining:
             start = self.maze_random.choice(list(self.remaining))
             path = self.random_walk(start)
-            print("full path: ", path)
             for i in range(len(path) - 1):
                 self.trim_wall(path[i], path[i + 1])
                 self.remaining.discard(path[i])
@@ -123,14 +104,14 @@ class MazeGenerator:
             self.remaining.discard(path[-1])
         
         self.print_maze()
-        print(self.prep_maze_str())
 
-
-    def random_walk(self, start: int):
+    def random_walk(self, start: int) -> List:
         current_cell = start
 
         path = list()
         path.append(start)
+        print(current_cell)
+        print(self.remaining)
         while current_cell in self.remaining:
             choosen_neighbor = self.chose_neighbor(current_cell)
             #print(choosen_neighbor)
@@ -141,7 +122,7 @@ class MazeGenerator:
                 path.append(choosen_neighbor)
             current_cell = choosen_neighbor
             #print("new somsiad: ", choosen_neighbor)
-        #print(path)
+        print(path)
         return path
 
     def clear_42_pattern(self) -> None:
@@ -202,4 +183,4 @@ class MazeGenerator:
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
     maze = Maze(21, 21, (0,0), (21,21), True)
-    maze_gen.cerate_maze(maze)
+    print(maze_gen.cerate_maze(maze))
