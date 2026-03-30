@@ -102,7 +102,7 @@ class Maze():
             self.y += self.size - 1 #to not have double walls -1 
         print(self.x)
         print(f"Y equals: {self.y}")
-        self.mlx.mlx_clear_window(self.ptr, self.window)
+        #self.mlx.mlx_clear_window(self.ptr, self.window)
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
                                          self.img_ptr, 560, 140)
 

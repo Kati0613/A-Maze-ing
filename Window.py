@@ -47,6 +47,7 @@ class Window():
                 self.button()
         elif key == 106:
             self.papei.show = not self.papei.show
+            print(self.papei.show)
             self.papei.show_button()
             
 
@@ -62,20 +63,26 @@ class Window():
 
             if button == 1:
                 if self.color != color and color != bytes([0, 0, 0, 0]):
-                    self.maze.i = 0
-                    self.maze.z = 0
+                    #self.maze.i = 0
+                    #self.maze.z = 0
                     self.color = color
-                    self.maze.draw_borders(self.color)
-                    self.maze.draw_maze(self.color)
-                    self.button.show_button()
+                    self.redraw()
                     print("COLOR:", list(color))
                     print("Click")
-                    self.papei.show = False
             elif button == 3:
                 if color != bytes([0, 0, 0, 0]):
                     self.maze.draw_fourtytwo(color)
                     self.papei.show = False
-
+    
+    def redraw(self):
+        self.mlx.mlx_clear_window(self.ptr, self.window)
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 750, 0xFFFFFF, "Right click to change 42 colors")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 720, 0xFFFFFF, "Left click to change maze colors")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 660, 0xFFFFFF, "Click P to show")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 690, 0xFFFFFF, "a path from start to finish")
+        self.maze.draw_maze(self.color)
+        self.button.show_button()
+        self.papei.show = False
 
     def close(self, param):
         self.mlx.mlx_destroy_window(self.ptr, self.window)
@@ -83,11 +90,15 @@ class Window():
 
 
     def show(self):
-        self.maze.draw_maze()
         self.button = Button(self.ptr, self.window, self.mlx)
-        self.button.show_button()
         self.papei = Button(self.ptr, self.window, self.mlx, 100, 100, "4837205_print_1.png", False)
-        self.mlx.mlx_string_put(self.ptr, self.window, 1570, 750, 0xFF00FF, "Right click to change maze colors")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 750, 0xFFFFFF, "Right click to change 42 colors")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 720, 0xFFFFFF, "Left click to change maze colors")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 660, 0xFFFFFF, "Click P to show")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 690, 0xFFFFFF, "a path from start to finish")
+        self.maze.draw_maze()
+        self.button.show_button()
+        
         
         #self.maze.draw_path()
         #self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_borders, self.color)
