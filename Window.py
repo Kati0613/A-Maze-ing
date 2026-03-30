@@ -86,7 +86,7 @@ class Window():
         self.maze.draw_maze()
         self.button = Button(self.ptr, self.window, self.mlx)
         self.button.show_button()
-        self.papei = Button(self.ptr, self.window, self.mlx, 100, 100, "4837205_print_1.png", False)
+        self.papei = Button(self.ptr, self.window, self.mlx, 100, 100, "image.png", False)
         self.mlx.mlx_string_put(self.ptr, self.window, 1570, 750, 0xFF00FF, "Right click to change maze colors")
         
         #self.maze.draw_path()

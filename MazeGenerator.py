@@ -34,7 +34,11 @@ class MazeGenerator:
         self.put_42()
         self.wilson()
         self.save_output()
+<<<<<<< HEAD
         return self.prep_maze_str()
+=======
+        #zwroc string hex albo bin
+>>>>>>> 22e13cd (cos)
 
     def prep_maze_str(self) -> str:
         maze_str: str = ""
