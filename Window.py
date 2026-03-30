@@ -37,7 +37,7 @@ class Window():
     def key_event(self, key, param):
         if key == 65307:  #bash xav do sprawdzenia
             self.close(None)
-        elif key == 1485:
+        elif key == 112:
             if not self.path_show:
                 self.path_show = True
                 self.maze.draw_path(bytes([0, 255, 255, 255]))
@@ -45,7 +45,7 @@ class Window():
                 self.path_show = False
                 self.maze.draw_path(bytes([0, 0, 0, 255]))
                 self.button()
-        elif key == 1482:
+        elif key == 106:
             self.papei.show = not self.papei.show
             self.papei.show_button()
             
