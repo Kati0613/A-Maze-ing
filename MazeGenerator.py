@@ -184,5 +184,5 @@ class MazeGenerator:
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze(200, 150, (12,24), (200,150), True)
-    maze_gen.cerate_maze(maze)
+    maze = Maze(10, 10, (0,0), (10,10), True)
+    maze_gen.cerate_maze(maze, 1)
