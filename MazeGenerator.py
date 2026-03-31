@@ -85,10 +85,12 @@ class MazeGenerator:
 
     def wilson(self):
         self.remaining.discard(self.exit)
+        print(self.exit)
         start = self.entry
         self.clear_42_pattern()
         #self.remaining.remove(start)
         path = self.random_walk(start)
+        #print(path)
         for i in range(len(path) - 1):
             self.trim_wall(path[i], path[i + 1])
             self.remaining.discard(path[i])
@@ -103,15 +105,15 @@ class MazeGenerator:
 
             self.remaining.discard(path[-1])
         
-        self.print_maze()
+        #self.print_maze()
 
     def random_walk(self, start: int) -> List:
         current_cell = start
 
         path = list()
         path.append(start)
-        print(current_cell)
-        print(self.remaining)
+        #print(current_cell)
+        #print(self.remaining)
         while current_cell in self.remaining:
             choosen_neighbor = self.chose_neighbor(current_cell)
             #print(choosen_neighbor)
@@ -122,7 +124,7 @@ class MazeGenerator:
                 path.append(choosen_neighbor)
             current_cell = choosen_neighbor
             #print("new somsiad: ", choosen_neighbor)
-        print(path)
+        #print(path)
         return path
 
     def clear_42_pattern(self) -> None:
@@ -182,5 +184,5 @@ class MazeGenerator:
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze(21, 21, (0,0), (21,21), True)
-    print(maze_gen.cerate_maze(maze))
+    maze = Maze(200, 150, (12,24), (200,150), True)
+    maze_gen.cerate_maze(maze)

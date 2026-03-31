@@ -21,7 +21,7 @@ class Maze():
         self.lines = file.readlines()
         self.width_img = len(self.lines[0]) - 1
         self.height_img = len(self.lines) - 4
-        self.size = 32
+        self.size = 5
         self.img_ptr = self.mlx.mlx_new_image(
             self.ptr, self.width_img * self.size,
             (self.height_img + 1) * (self.size - 1)
