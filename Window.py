@@ -50,6 +50,17 @@ class Window():
             self.papei.show = not self.papei.show
             print(self.papei.show)
             self.papei.show_button()
+        elif key == 65363:
+            self.button2.update_int(1)
+        elif key == 65361:
+            self.button2.update_int(-1)
+        elif key == 65362:
+            self.button2.update_int(1)
+        elif key == 65364:
+            self.button3.update_int(-1)
+        elif key == 65293:
+            pass
+
             
 
 
@@ -61,6 +72,7 @@ class Window():
             pixelx = x - 1600
             pixely = y - 700
             color = self.button.color_data[pixely * self.button.size_line +  4 * pixelx: pixely * self.button.size_line +  4 * (pixelx + 1)]
+            #print(list(color))
 
             if button == 1:
                 if self.color != color and color != bytes([0, 0, 0, 0]):
@@ -82,6 +94,8 @@ class Window():
         self.mouse_left.show_button()
         self.mouse_right.show_button()
         self.p_key.show_button()
+        self.button2.refresh()
+        self.button3.refresh()
         self.papei.show = False
 
     def close(self, param):
@@ -94,8 +108,9 @@ class Window():
         self.papei = Image(self.ptr, self.window, self.mlx, 200, 720, "4837205_print_1.png", False)
         self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 558, "mouse.png")
         self.mouse_right = Image(self.ptr, self.window, self.mlx, 1730, 570, "42colormouse.png")
-        self.button2 = Button(self.ptr, self.window, self.mlx, 1650, 960, 70, 20, "22")
-        self.button3 = Button(self.ptr, self.window, self.mlx, 1760, 935, 20, 70, "1")
+        self.button2 = Button(self.ptr, self.window, self.mlx, 1650, 960, 70, 20, self.maze.width_img)
+        self.button3 = Button(self.ptr, self.window, self.mlx, 1760, 935, 20, 70, self.maze.height_img)
+        self.regenerate = Image(self.ptr, self.window, self.mlx, 1790, 920, "enter.png", )
         #self.mlx.mlx_string_put(self.ptr, self.window, 1600, 960, 0xFFFFFF, str(self.maze.width_img))
         #self.mlx.mlx_string_put(self.ptr, self.window, 1550, 960, 0xFFFFFF, str(self.maze.height_img))
         napis = "Click P to show"
@@ -105,6 +120,7 @@ class Window():
         self.mouse_left.show_button()
         self.p_key.show_button()
         self.mouse_right.show_button()
+        self.regenerate.show_button()
         
         
         
