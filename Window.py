@@ -2,6 +2,7 @@ from mlx import Mlx
 import time
 #from schlang import draw_schlang as schlang
 from DrawMaze import Maze
+from Image import Image
 from Button import Button
 
 class Window():
@@ -56,9 +57,9 @@ class Window():
 
     def mouse_click(self, button, x, y, param):
         print(f"Mouse on {x} and {y} address. Clicked {button}")
-        if ((x >= 1600 and x < 1834) and (y >= 800 and y < 999)): #baisicly window width i window height + img width i img height
+        if ((x >= 1600 and x < 1834) and (y >= 700 and y < 899)): #baisicly window width i window height + img width i img height
             pixelx = x - 1600
-            pixely = y - 800
+            pixely = y - 700
             color = self.button.color_data[pixely * self.button.size_line +  4 * pixelx: pixely * self.button.size_line +  4 * (pixelx + 1)]
 
             if button == 1:
@@ -76,12 +77,11 @@ class Window():
     
     def redraw(self):
         self.mlx.mlx_clear_window(self.ptr, self.window)
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 750, 0xFFFFFF, "Right click to change 42 colors")
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 720, 0xFFFFFF, "Left click to change maze colors")
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 660, 0xFFFFFF, "Click P to show")
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 690, 0xFFFFFF, "a path from start to finish")
         self.maze.draw_maze(self.color)
         self.button.show_button()
+        self.mouse_left.show_button()
+        self.mouse_right.show_button()
+        self.p_key.show_button()
         self.papei.show = False
 
     def close(self, param):
@@ -90,14 +90,22 @@ class Window():
 
 
     def show(self):
-        self.button = Button(self.ptr, self.window, self.mlx)
-        self.papei = Button(self.ptr, self.window, self.mlx, 100, 100, "4837205_print_1.png", False)
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 750, 0xFFFFFF, "Right click to change 42 colors")
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 720, 0xFFFFFF, "Left click to change maze colors")
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 660, 0xFFFFFF, "Click P to show")
-        self.mlx.mlx_string_put(self.ptr, self.window, 1550, 690, 0xFFFFFF, "a path from start to finish")
+        self.button = Image(self.ptr, self.window, self.mlx, 1600, 700)
+        self.papei = Image(self.ptr, self.window, self.mlx, 200, 720, "4837205_print_1.png", False)
+        self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 558, "mouse.png")
+        self.mouse_right = Image(self.ptr, self.window, self.mlx, 1730, 570, "42colormouse.png")
+        self.button2 = Button(self.ptr, self.window, self.mlx, 1650, 960, 70, 20, "22")
+        self.button3 = Button(self.ptr, self.window, self.mlx, 1760, 935, 20, 70, "1")
+        #self.mlx.mlx_string_put(self.ptr, self.window, 1600, 960, 0xFFFFFF, str(self.maze.width_img))
+        #self.mlx.mlx_string_put(self.ptr, self.window, 1550, 960, 0xFFFFFF, str(self.maze.height_img))
+        napis = "Click P to show"
+        self.p_key = Image(self.ptr, self.window, self.mlx, 1680, 460, "keyboard_key_p.png")
         self.maze.draw_maze()
         self.button.show_button()
+        self.mouse_left.show_button()
+        self.p_key.show_button()
+        self.mouse_right.show_button()
+        
         
         
         #self.maze.draw_path()
