@@ -13,7 +13,7 @@ class Window():
         self.holy = {1485: False, 1482: False, 50: False}
 
         validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
-        self.color = bytes([0, 255, 255, 255])
+        self.color = bytes([255, 255, 255, 255])
 
         if validator != 0:
             print("Błąd przy pobieraniu rozmiaru ekranu")
@@ -51,19 +51,17 @@ class Window():
             print(self.papei.show)
             self.papei.show_button()
         elif key == 65363:
-            self.button2.update_int(1)
+            size = self.button2.update_int(1)
+            if self.maze.size != size:
+                self.maze.size = size
+                self.redraw()
         elif key == 65361:
-            self.button2.update_int(-1)
-        elif key == 65362:
-            self.button2.update_int(1)
-        elif key == 65364:
-            self.button3.update_int(-1)
+            size = self.button2.update_int(-1)
+            if self.maze.size != size:
+                self.maze.size = size
+                self.redraw()
         elif key == 65293:
             pass
-
-            
-
-
         print(key)
 
     def mouse_click(self, button, x, y, param):
@@ -76,12 +74,9 @@ class Window():
 
             if button == 1:
                 if self.color != color and color != bytes([0, 0, 0, 0]):
-                    #self.maze.i = 0
-                    #self.maze.z = 0
                     self.color = color
                     self.redraw()
                     print("COLOR:", list(color))
-                    print("Click")
             elif button == 3:
                 if color != bytes([0, 0, 0, 0]):
                     self.maze.draw_fourtytwo(color)
@@ -95,8 +90,9 @@ class Window():
         self.mouse_right.show_button()
         self.p_key.show_button()
         self.button2.refresh()
-        self.button3.refresh()
         self.papei.show = False
+        self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Change size:")
+        self.regenerate.show_button()
 
     def close(self, param):
         self.mlx.mlx_destroy_window(self.ptr, self.window)
@@ -108,12 +104,9 @@ class Window():
         self.papei = Image(self.ptr, self.window, self.mlx, 200, 720, "4837205_print_1.png", False)
         self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 558, "mouse.png")
         self.mouse_right = Image(self.ptr, self.window, self.mlx, 1730, 570, "42colormouse.png")
-        self.button2 = Button(self.ptr, self.window, self.mlx, 1650, 960, 70, 20, self.maze.width_img)
-        self.button3 = Button(self.ptr, self.window, self.mlx, 1760, 935, 20, 70, self.maze.height_img)
-        self.regenerate = Image(self.ptr, self.window, self.mlx, 1790, 920, "enter.png", )
-        #self.mlx.mlx_string_put(self.ptr, self.window, 1600, 960, 0xFFFFFF, str(self.maze.width_img))
-        #self.mlx.mlx_string_put(self.ptr, self.window, 1550, 960, 0xFFFFFF, str(self.maze.height_img))
-        napis = "Click P to show"
+        self.button2 = Button(self.ptr, self.window, self.mlx, 1630, 950, 70, 20, self.maze.size)
+        self.regenerate = Image(self.ptr, self.window, self.mlx, 1740, 920, "enter.png", )
+        self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Change size:")
         self.p_key = Image(self.ptr, self.window, self.mlx, 1680, 460, "keyboard_key_p.png")
         self.maze.draw_maze()
         self.button.show_button()
@@ -121,11 +114,6 @@ class Window():
         self.p_key.show_button()
         self.mouse_right.show_button()
         self.regenerate.show_button()
-        
-        
-        
-        #self.maze.draw_path()
-        #self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_borders, self.color)
         self.mlx.mlx_loop(self.ptr)
 
 

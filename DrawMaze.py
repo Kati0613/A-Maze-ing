@@ -8,14 +8,14 @@ class Maze():
         self.window = window
         self.ptr = ptr
         self.fourtytwo = []
-        self.fourtytwo_color = bytes([0, 255, 255, 255])
+        self.fourtytwo_color = bytes([0, 0, 0, 0])
 
         self.x = 0
         self.y = 0
         self.i = 0
         self.z = 0
 
-        self.color = bytes([0, 255, 255, 255])
+        self.color = bytes([255, 255, 255, 255])
 
         file = open(output)
         self.lines = file.readlines()
@@ -29,10 +29,16 @@ class Maze():
         self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
         self.image_data = self.mlx_img_data[0]
         self.line_length = self.mlx_img_data[2]
-        self.mlx.mlx_put_image_to_window(
-            self.ptr, self.window, self.img_ptr, 560, 140)
-    
+
     def draw_maze(self, color=bytes([255, 255, 255, 255]), pixel=None):
+        self.fourtytwo = []
+        self.img_ptr = self.mlx.mlx_new_image(
+            self.ptr, self.width_img * self.size,
+            (self.height_img + 1) * (self.size - 1)
+            )# 800 to piksele czyli jeden piksel to 4 bity czyli jeden bajt
+        self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
+        self.image_data = self.mlx_img_data[0]
+        self.line_length = self.mlx_img_data[2]
         color = bytes(color)
         print(len(self.image_data))
         start_parameters = self.lines[-3]
@@ -99,10 +105,7 @@ class Maze():
                             ] = (self.size - 4) * bytes([255, 0, 255, 255])
                 self.x += self.size - 1 #to not have double walls -1
             #break
-            self.y += self.size - 1 #to not have double walls -1 
-        print(self.x)
-        print(f"Y equals: {self.y}")
-        #self.mlx.mlx_clear_window(self.ptr, self.window)
+            self.y += self.size - 1 #to not have double walls -1
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
                                          self.img_ptr, 560, 140)
 
