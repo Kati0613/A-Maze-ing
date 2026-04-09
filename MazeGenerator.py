@@ -26,7 +26,7 @@ class MazeGenerator:
     def prep_maze_str(self) -> str:
         maze_str: str = ""
         for cell in self.maze_map:
-            maze_str += str(bin(cell))[2:]
+            maze_str += format(cell, '04b')
         return maze_str
     
     def put_42(self):
@@ -184,5 +184,5 @@ class MazeGenerator:
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze(10, 10, (0,0), (10,10), True)
-    maze_gen.cerate_maze(maze, 1)
+    maze = Maze(9, 9, (0,0), (9,9), True)
+    print(len(maze_gen.cerate_maze(maze, 1)))
