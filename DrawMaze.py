@@ -2,14 +2,13 @@ from mlx import Mlx
 
 class Maze():
 
-#output na pliki
-    def __init__(self, mlx, ptr, window, output):
+    def __init__(self, mlx, ptr, window, output, width, height):
         self.mlx = mlx
         self.window = window
         self.ptr = ptr
         self.fourtytwo = []
-        self.fourtytwo_color = bytes([0, 0, 0, 0])
-
+        self.fourtytwo_color = bytes([0, 0, 0, 255])
+ 
         self.x = 0
         self.y = 0
         self.i = 0
@@ -17,144 +16,96 @@ class Maze():
 
         self.color = bytes([255, 255, 255, 255])
 
-        file = open(output)
-        self.lines = file.readlines()
-        self.width_img = len(self.lines[0]) - 1
-        self.height_img = len(self.lines) - 4
-        self.size = 32
-        self.img_ptr = self.mlx.mlx_new_image(
-            self.ptr, self.width_img * self.size,
-            (self.height_img + 1) * (self.size - 1)
-            )# 800 to piksele czyli jeden piksel to 4 bity czyli jeden bajt
-        self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
-        self.image_data = self.mlx_img_data[0]
-        self.line_length = self.mlx_img_data[2]
-
-    def draw_maze(self, color=bytes([255, 255, 255, 255]), pixel=None):
+        self.output = output
+        self.size = 36
+    
+    def draw_maze(self, color=bytes([255, 255, 255, 255]), width=21, height=21):
+        self.width = width
+        self.height = height
+        print(f"\n MAZE WIDTH: {self.width} \n MAZE HEIGHT: {self.height}")
+        print(f"LENGTH OF OUTPUT {len(self.output)}")
+        print(f"MAZE: {self.output}")
+        self.output = "1111111111111111111111111111111111111111111111111111111111111111"
         self.fourtytwo = []
-        self.img_ptr = self.mlx.mlx_new_image(
-            self.ptr, self.width_img * self.size,
-            (self.height_img + 1) * (self.size - 1)
-            )# 800 to piksele czyli jeden piksel to 4 bity czyli jeden bajt
+
+       
+        
+        cell = self.size - 1
+        img_w = self.width * cell + 1
+        img_h = self.height * cell + 1
+
+        self.img_ptr = self.mlx.mlx_new_image(self.ptr, img_w, img_h)
         self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
         self.image_data = self.mlx_img_data[0]
         self.line_length = self.mlx_img_data[2]
-        color = bytes(color)
-        print(len(self.image_data))
-        start_parameters = self.lines[-3]
-        end_parameters = self.lines[-2]
-        self.startx = int(start_parameters[:start_parameters.find(",")])
-        self.starty = int(start_parameters[start_parameters.find(",") + 1:])
-        self.endx = int(end_parameters[:end_parameters.find(",")])
-        self.endy = int(end_parameters[end_parameters.find(",") + 1:])
-        self.y = 0
-        self.image_data[:] = len(self.image_data) // 4 * bytes([0,0,0,255])
-        for idxy, line in enumerate(self.lines[:-4]):
-            self.x = 0
-            for idxx, px in enumerate(line[:-1]):
-                pixel = format(int(px, 16), "04b")
-                if pixel[3] == "1":
-                    self.image_data[self.y*self.line_length + 4 * self.x:
-                                    self.y*self.line_length
-                                    + 4*(self.x + self.size)
-                                    ] = self.size * color#gorna sciana
-                for i in range(0, self.size - 1):
-                    if pixel[0] == "1":
-                        self.image_data[
-                            (self.y + i) * self.line_length + 4 * self.x:
-                            (self.y + i) * self.line_length + 4 * (self.x + 1)
-                            ] = color#lewa sciana
-                    if pixel[2] == "1":
-                        self.image_data[
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + self.size - 1):
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + self.size)
-                            ] = color#prawa sciana
-                if pixel[1] == "1":
-                    self.image_data[
-                        (self.y+self.size - 1)*self.line_length + 4 * self.x:
-                        (self.y + self.size - 1)*self.line_length
-                        + 4*(self.x + self.size)
-                        ] = self.size * color#dolna sciana
-                    #print(f"Dolna scianka : {self.y+self.size - 1}")
-                if pixel == "1111":
-                    self.fourtytwo.append([self.x, self.y])
-                    for i in range(2, self.size - 2):
-                        self.image_data[
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + 2):
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * self.fourtytwo_color
-                if idxx == self.startx and idxy == self.starty:
-                    for i in range(2, self.size - 2):
-                        self.image_data[
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + 2):
-                            (self.y + i) * self.line_length
-                            + 4 *(self.x + self.size - 2)
-                            ] = (self.size - 4) * bytes([255, 255, 0, 255])
-                if idxx == self.endx and idxy == self.endy:
-                    for i in range(2, self.size - 2):
-                        self.image_data[
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + 2):
-                            (self.y + i) * self.line_length
-                            + 4 * (self.x + self.size - 2)
-                            ] = (self.size - 4) * bytes([255, 0, 255, 255])
-                self.x += self.size - 1 #to not have double walls -1
-            #break
-            self.y += self.size - 1 #to not have double walls -1
-        self.mlx.mlx_put_image_to_window(self.ptr, self.window,
-                                         self.img_ptr, 560, 140)
 
-    def draw_borders(self, color=bytes([255, 255, 255, 255])):
-        color = bytes(color)
-        if color != self.color:
-            self.i = 0
-            self.z = 0
-            self.color = color
-        if self.i < self.x:
-            self.image_data[
-                4*self.i: 4 * (self.i + 1)
-                ] = self.color
-            self.image_data[
-                (self.y) * self.line_length + 4*self.i:
-                (self.y) * self.line_length + 4 * (self.i + 1)
-                ] = self.color
-        if self.z < self.y:
-            self.image_data[
-                self.z*self.line_length + 4*0:
-                self.z*self.line_length + 4 * (0 + 1)
-                ] = self.color
-            self.image_data[
-                self.z*self.line_length + 4*self.x:
-                self.z*self.line_length + 4 * (self.x + 1)
-                ] = self.color
-        self.mlx.mlx_put_image_to_window(
-            self.ptr, self.window, self.img_ptr, 560, 140)
-        self.i += 1 #temporary x
-        self.z += 1 #temporary
+        #print(self.line_length)
+        
+        # Szybkie czyszczenie - używamy bytes o tej samej długości
+        self.image_data[:] = len(self.image_data) // 4 * bytes([0,0,0,255])
+        
+        x, y, j = 0, 0, 0
+
+        while y < self.height:
+            print(f"\n X: {x} Y: {y}")
+            pixel = self.output[j:j+4]
+            print(f"PIXEL: {pixel}")
+            if pixel[3] == "1": # gorna
+                start = y * cell * self.line_length + 4 * x * cell
+                end = y * cell * self.line_length + (cell * x + cell + 1) * 4
+                self.image_data[
+                    start: end
+                     ] = self.size * color
+            if pixel[1] == "1":
+                start = (y + 1) * cell * self.line_length + x * cell * 4
+                end = (y + 1) * cell * self.line_length + (cell * x + cell + 1) * 4
+                self.image_data[
+                    start: end
+                     ] = self.size * color
+            if pixel[0] == "1":
+                for i in range(0, cell):
+                    start = (y * cell + i) * self.line_length + x * cell * 4
+                    #print(f"START lewa sciana {start}")
+                    end = (y * cell + i) * self.line_length + x*cell * 4 + 4
+                    self.image_data[
+                            start: end
+                            ] = color
+            if pixel[2] == "1":
+                for i in range(0, cell):
+                    start = (y * cell + i) * self.line_length + (x + 1) * 4 * cell
+                    end = (y * cell + i) * self.line_length + (x + 1) * 4 * cell + 4
+                    self.image_data[
+                            start: end
+                            ] = color
+            if x == self.width - 1:
+                x = -1
+                y += 1
+            j += 4
+            x += 1
+            #print(f"\n X: {x} Y: {y}")
+
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 560, 140)
     
     def draw_fourtytwo(self, color=bytes([255, 255, 255, 255])):
+        cell = self.size - 1
+
         for coor in self.fourtytwo:
-            self.fourtytwo_color = color
-            y = coor[1]
-            x = coor[0]
-            for i in range(2, self.size - 2):
-                        self.image_data[
-                            (y + i) * self.line_length
-                            + 4 * (x + 2):
-                            (y + i) * self.line_length
-                            + 4 * (x + self.size - 2)
-                            ] = (self.size - 4) * color
+            x, y = coor
+
+            base_y = y * cell * self.line_length
+            base_x = x * cell * 4
+
+            for i in range(2, cell - 2):
+                row = base_y + i * self.line_length
+
+                start = row + base_x + 2 * 4
+                end = row + base_x + (cell - 2) * 4
+
+                self.image_data[start:end] = (cell - 4) * color
+
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
                                          self.img_ptr, 560, 140)
-        
 
-
-    
     def draw_path(self, color = bytes([0, 255, 255, 255])):
         y = self.starty * (self.size - 1)
         x = self.startx * (self.size - 1)

@@ -1,16 +1,21 @@
 from mlx import Mlx
 import time
-#from schlang import draw_schlang as schlang
 from DrawMaze import Maze
 from Image import Image
 from Button import Button
+from typing import List, Union, Set, Generator, Optional, Tuple
+from MazeGenerator import MazeGenerator
+from Maze import Maze as Maze2
 
 class Window():
 
-    def __init__(self, output=None):
+    def __init__(self, output=None, maze_width = 0, maze_height = 0):
         self.mlx = Mlx()
         self.ptr = self.mlx.mlx_init()
         self.holy = {1485: False, 1482: False, 50: False}
+
+        self.maze_width = maze_width
+        self.maze_height = maze_height
 
         validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
         self.color = bytes([255, 255, 255, 255])
@@ -28,7 +33,7 @@ class Window():
         self.output = output
         self.path_show = False
 
-        self.maze = Maze(self.mlx, self.ptr, self.window, output)
+        self.maze = Maze(self.mlx, self.ptr, self.window, output, maze_width, maze_height)
 
         self.mlx.mlx_hook(self.window, 33, 0, self.close, None)
         self.mlx.mlx_hook(self.window, 4, 1 << 2, self.mouse_click, None)
@@ -84,7 +89,7 @@ class Window():
     
     def redraw(self):
         self.mlx.mlx_clear_window(self.ptr, self.window)
-        self.maze.draw_maze(self.color)
+        self.maze.draw_maze(self.color, self.maze_width, self.maze_height)
         self.button.show_button()
         self.mouse_left.show_button()
         self.mouse_right.show_button()
@@ -96,7 +101,7 @@ class Window():
 
     def close(self, param):
         self.mlx.mlx_destroy_window(self.ptr, self.window)
-        self.mlx.mlx_loop_exit(self.ptr) #zamyka okno
+        self.mlx.mlx_loop_exit(self.ptr)#zamyka okno
 
 
     def show(self):
@@ -108,7 +113,8 @@ class Window():
         self.regenerate = Image(self.ptr, self.window, self.mlx, 1740, 920, "enter.png", )
         self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Change size:")
         self.p_key = Image(self.ptr, self.window, self.mlx, 1680, 460, "keyboard_key_p.png")
-        self.maze.draw_maze()
+        print(f"\n MAZE WIDTH: {self.maze_width} \n MAZE HEIGHT: {self.maze_height}")
+        self.maze.draw_maze(bytes([255, 255, 255, 255]), self.maze_width, self.maze_height)
         self.button.show_button()
         self.mouse_left.show_button()
         self.p_key.show_button()
@@ -119,5 +125,9 @@ class Window():
 
 
 if __name__ == "__main__":
-    window = Window("output_test.txt")
+    maze_gen = MazeGenerator()
+    maze = Maze2(4, 4, (0,0), (1, 1), False)
+    output = maze_gen.cerate_maze(maze, 1)
+    window = Window(output, maze.width, maze.height)
     window.show()
+
