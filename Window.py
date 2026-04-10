@@ -9,13 +9,10 @@ from Maze import Maze as Maze2
 
 class Window():
 
-    def __init__(self, output=None, maze_width = 0, maze_height = 0):
+    def __init__(self, output=None, maze_width = 10, maze_height = 10, entry = (0, 0), exit = (10, 10)):
         self.mlx = Mlx()
         self.ptr = self.mlx.mlx_init()
         self.holy = {1485: False, 1482: False, 50: False}
-
-        self.maze_width = maze_width
-        self.maze_height = maze_height
 
         validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
         self.color = bytes([255, 255, 255, 255])
@@ -23,8 +20,8 @@ class Window():
         if validator != 0:
             print("Błąd przy pobieraniu rozmiaru ekranu")
 
-        print(width)
-        print(height)
+        #print(width)
+        #print(height)
 
         self.window = self.mlx.mlx_new_window(
             self.ptr, width, height, "whoores"
@@ -33,7 +30,10 @@ class Window():
         self.output = output
         self.path_show = False
 
-        self.maze = Maze(self.mlx, self.ptr, self.window, output, maze_width, maze_height)
+        self.entry = entry
+        self.exit = exit
+
+        self.maze = Maze(self.mlx, self.ptr, self.window, output, maze_width, maze_height, entry, exit)
 
         self.mlx.mlx_hook(self.window, 33, 0, self.close, None)
         self.mlx.mlx_hook(self.window, 4, 1 << 2, self.mouse_click, None)
@@ -41,6 +41,7 @@ class Window():
         self.papa = True
 
     def key_event(self, key, param):
+        #print(key)
         if key == 65307:  #bash xav do sprawdzenia
             self.close(None)
         elif key == 112:
@@ -56,47 +57,59 @@ class Window():
             print(self.papei.show)
             self.papei.show_button()
         elif key == 65363:
-            size = self.button2.update_int(1)
+            size = self.button2.update_int(1, self.maze.max)
             if self.maze.size != size:
                 self.maze.size = size
                 self.redraw()
         elif key == 65361:
-            size = self.button2.update_int(-1)
+            size = self.button2.update_int(-1, self.maze.max)
             if self.maze.size != size:
                 self.maze.size = size
                 self.redraw()
         elif key == 65293:
-            pass
-        print(key)
+            self.maze.clear_image()
+            maze = Maze2(self.maze.width, self.maze.height, self.maze.entry, self.maze.exit, False)
+            self.maze.output = maze_gen.cerate_maze(maze)
+            self.redraw()
+
 
     def mouse_click(self, button, x, y, param):
-        print(f"Mouse on {x} and {y} address. Clicked {button}")
+        if button == 4:
+            size = self.button2.update_int(1, self.maze.max)
+            if self.maze.size != size:
+                self.maze.size = size
+                self.redraw()
+        if button == 5:
+            size = self.button2.update_int(-1, self.maze.max)
+            if self.maze.size != size:
+                self.maze.size = size
+                self.redraw()
+        #print(button)
         if ((x >= 1600 and x < 1834) and (y >= 700 and y < 899)): #baisicly window width i window height + img width i img height
             pixelx = x - 1600
             pixely = y - 700
             color = self.button.color_data[pixely * self.button.size_line +  4 * pixelx: pixely * self.button.size_line +  4 * (pixelx + 1)]
             #print(list(color))
-
             if button == 1:
                 if self.color != color and color != bytes([0, 0, 0, 0]):
                     self.color = color
                     self.redraw()
-                    print("COLOR:", list(color))
+                    #print("COLOR:", list(color))
             elif button == 3:
                 if color != bytes([0, 0, 0, 0]):
                     self.maze.draw_fourtytwo(color)
-                    self.papei.show = False
+                    self.maze.put_maze_to_window()
     
     def redraw(self):
         self.mlx.mlx_clear_window(self.ptr, self.window)
-        self.maze.draw_maze(self.color, self.maze_width, self.maze_height)
+        self.maze.draw_maze(self.color)
         self.button.show_button()
         self.mouse_left.show_button()
         self.mouse_right.show_button()
         self.p_key.show_button()
         self.button2.refresh()
-        self.papei.show = False
-        self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Change size:")
+        self.papei.show_button()
+        self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Scale:")
         self.regenerate.show_button()
 
     def close(self, param):
@@ -106,15 +119,14 @@ class Window():
 
     def show(self):
         self.button = Image(self.ptr, self.window, self.mlx, 1600, 700)
-        self.papei = Image(self.ptr, self.window, self.mlx, 200, 720, "4837205_print_1.png", False)
+        self.papei = Image(self.ptr, self.window, self.mlx, 170, 720, "4837205_print_1.png", False)
         self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 558, "mouse.png")
         self.mouse_right = Image(self.ptr, self.window, self.mlx, 1730, 570, "42colormouse.png")
         self.button2 = Button(self.ptr, self.window, self.mlx, 1630, 950, 70, 20, self.maze.size)
         self.regenerate = Image(self.ptr, self.window, self.mlx, 1740, 920, "enter.png", )
-        self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Change size:")
+        self.mlx.mlx_string_put(self.ptr, self.window, 1600, 920, 0xFFFFFF, "Scale:")
         self.p_key = Image(self.ptr, self.window, self.mlx, 1680, 460, "keyboard_key_p.png")
-        print(f"\n MAZE WIDTH: {self.maze_width} \n MAZE HEIGHT: {self.maze_height}")
-        self.maze.draw_maze(bytes([255, 255, 255, 255]), self.maze_width, self.maze_height)
+        self.maze.draw_maze(bytes([255, 255, 255, 255]))
         self.button.show_button()
         self.mouse_left.show_button()
         self.p_key.show_button()
@@ -126,8 +138,9 @@ class Window():
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze2(300, 300, (0,0), (300, 300), False)
+    maze = Maze2(150, 150, (0, 0) , (4, 2), False)
     output = maze_gen.cerate_maze(maze, 1)
-    window = Window(output, maze.width, maze.height)
+    print(maze.entry, maze.exit)
+    window = Window(output, maze.width, maze.height, (0, 0), (4, 2))
     window.show()
 

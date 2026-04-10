@@ -27,8 +27,9 @@ class Button():
     def put_str(self):
         self.mlx.mlx_string_put(self.ptr, self.window, self.x + self.width // 2 - 5 * len(self.word), self.y + self.height // 2 - 10, 0x000000, self.word)
     
-    def update_int(self, sub):
-        counter = min(max(int(self.word) + sub, 2), 40)
+    def update_int(self, sub, maximum = 103):
+        #print(f"MAXIMUM: {maximum}")
+        counter = min(max(int(self.word) + sub, 2), maximum)
         self.word = str(counter)
         self.image_data[:] = len(self.image_data) // 4 * bytes([153, 204, 255, 255])
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.btn_ptr, self.x, self.y)
@@ -39,5 +40,3 @@ class Button():
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.btn_ptr, self.x, self.y)
         if str is not None:
             self.put_str()
-        
-        
