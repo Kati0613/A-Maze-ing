@@ -1,5 +1,7 @@
 from typing import List
 from maze import Maze
+from MazeGenerator import MazeGenerator
+
 class MazeSolver:
     def preper_data(self, maze: Maze):
         self.maze_map = maze.maze_map
@@ -36,6 +38,7 @@ class MazeSolver:
 
         path.append(entry)
         path.reverse()
+        print(path)
 
     def check_neighbors(self, current: int):
         neighbors = []
@@ -59,3 +62,9 @@ class MazeSolver:
             neighbors.append(current + 1)
         
         return neighbors
+
+if __name__ == "__main__":
+    maze = Maze(9, 9, (0, 0), (9, 9), True)
+    gen = MazeGenerator()
+    
+    solver = MazeSolver()
