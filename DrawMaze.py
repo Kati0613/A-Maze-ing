@@ -25,7 +25,7 @@ class Maze():
         print(f"\n MAZE WIDTH: {self.width} \n MAZE HEIGHT: {self.height}")
         print(f"LENGTH OF OUTPUT {len(self.output)}")
         print(f"MAZE: {self.output}")
-        self.output = "1111111111111111111111111111111111111111111111111111111111111111"
+        #self.output = "1111111111111111111111111111111111111111111111111111111111111111"
         self.fourtytwo = []
 
        

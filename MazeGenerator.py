@@ -12,8 +12,8 @@ class MazeGenerator:
         self.width = maze.width
         self.height = maze.height
         self.is_perfect = maze.is_perfect
-        self.entry = maze.entry
-        self.exit = maze.exit
+        self.entry = maze.start
+        self.exit = maze.end
         self.maze_map: List[int] = [0xF] * (self.width * self.height)
         self.remaining: Set[int] = set(range(self.width * self.height))
         self.pattern: Set[int] = set()
@@ -40,20 +40,16 @@ class MazeGenerator:
         self.pattern.add(center - 3)
         self.pattern.add(center - 3 - self.width)
         self.pattern.add(center - 3 - self.width * 2)
-        #self.pattern.add(center - 3 - self.width * 3)
         self.pattern.add(center - 1 + self.width)
         self.pattern.add(center - 1 + self.width * 2)
-        #self.pattern.add(center - 1 + self.width * 3)
 
         self.pattern.add(center + 1)
         self.pattern.add(center + 2)
         self.pattern.add(center + 3)
         self.pattern.add(center + 1 + self.width)
-        #self.pattern.add(center + 1 + self.width * 2)
         self.pattern.add(center + 1 + self.width * 2)
         self.pattern.add(center + 2 + self.width * 2)
         self.pattern.add(center + 3 + self.width * 2)
-        #self.pattern.add(center + 3 - self.width * 2)
         self.pattern.add(center + 3 - self.width)
         self.pattern.add(center + 3 - self.width * 2)
         self.pattern.add(center + 2 - self.width * 2)
@@ -85,12 +81,9 @@ class MazeGenerator:
 
     def wilson(self):
         self.remaining.discard(self.exit)
-        print(self.exit)
         start = self.entry
         self.clear_42_pattern()
-        #self.remaining.remove(start)
         path = self.random_walk(start)
-        #print(path)
         for i in range(len(path) - 1):
             self.trim_wall(path[i], path[i + 1])
             self.remaining.discard(path[i])
@@ -105,26 +98,19 @@ class MazeGenerator:
 
             self.remaining.discard(path[-1])
         
-        #self.print_maze()
 
     def random_walk(self, start: int) -> List:
         current_cell = start
 
         path = list()
         path.append(start)
-        #print(current_cell)
-        #print(self.remaining)
         while current_cell in self.remaining:
             choosen_neighbor = self.chose_neighbor(current_cell)
-            #print(choosen_neighbor)
             if choosen_neighbor in path:
-                #print("looooop")
                 self.enrase_loop(path, choosen_neighbor)
             else:
                 path.append(choosen_neighbor)
             current_cell = choosen_neighbor
-            #print("new somsiad: ", choosen_neighbor)
-        #print(path)
         return path
 
     def clear_42_pattern(self) -> None:
@@ -132,12 +118,7 @@ class MazeGenerator:
             self.remaining.discard(cell)
 
     def enrase_loop(self, path: List[int], cell: int) -> None:
-        #print(path)
-        #print(cell)
         loop_start = path.index(cell)
-        #for cell in path[loop_start:]:
-            #self.remaining.add(cell)
-        #print(self.remaining)
         del path[loop_start + 1:]
 
 
@@ -177,12 +158,11 @@ class MazeGenerator:
         elif neighbor == cell - self.width:  # góra
             self.maze_map[cell] &= ~0b0001
             self.maze_map[neighbor] &= ~0b0100
-
         else:
             raise ValueError(f"{cell} and {neighbor} are not neighbors")
 
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze(9, 9, (0,0), (9,9), True)
+    maze = Maze(400, 400, (0,0), (400,400), True)
     print(len(maze_gen.cerate_maze(maze, 1)))
