@@ -25,13 +25,14 @@ class Button():
         
     
     def put_str(self):
+        self.image_data[:] = len(self.image_data) // 4 * bytes([153, 204, 255, 255])
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.btn_ptr, self.x, self.y)
         self.mlx.mlx_string_put(self.ptr, self.window, self.x + self.width // 2 - 5 * len(self.word), self.y + self.height // 2 - 10, 0x000000, self.word)
     
-    def update_int(self, sub, maximum = 103):
+    def update_int(self, sub, maximum = 103, minimum = 2):
         #print(f"MAXIMUM: {maximum}")
-        counter = min(max(int(self.word) + sub, 2), maximum)
+        counter = min(max(int(self.word) + sub, minimum), maximum)
         self.word = str(counter)
-        self.image_data[:] = len(self.image_data) // 4 * bytes([153, 204, 255, 255])
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.btn_ptr, self.x, self.y)
         self.mlx.mlx_string_put(self.ptr, self.window, self.x + self.width // 2 - 5 * len(self.word), self.y + self.height // 2 - 10, 0x000000, self.word)
         return counter

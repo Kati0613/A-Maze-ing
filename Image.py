@@ -26,6 +26,7 @@ class Image():
 
 
         self.show = show
+
             
     def show_button(self):
         if self.show == True:

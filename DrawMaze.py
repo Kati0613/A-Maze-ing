@@ -7,7 +7,7 @@ class Maze():
         self.window = window
         self.ptr = ptr
         self.fourtytwo = []
-        self.fourtytwo_color = bytes([0, 0, 0, 255])
+        self.fourtytwo_color = bytes([0, 0, 0, 70])
  
         self.x = 0
         self.y = 0
@@ -27,15 +27,20 @@ class Maze():
         if width >= height:
             self.size = round(870/width + 1.2)
             self.max = round(919.15/width + 0.872)
-            #print(f"MAXIMUM: {self.max}")
         else:
             self.size = round(870 / height + 1.2)
             self.max = round(919.15 / height + 0.872)
-            #print(f"MAXIMUM: {self.max}")
-
-        #self.size = 4
+    
+    def update_size(self):
+        if self.width >= self.height:
+            self.size = round(870/self.width + 1.2)
+            self.max = round(919.15/self.width + 0.872)
+        else:
+            self.size = round(870 / self.height + 1.2)
+            self.max = round(919.15 / self.height + 0.872)
     
     def draw_maze(self, color=bytes([255, 255, 255, 255])):
+    
         self.fourtytwo = []
 
         cell = self.size - 1
@@ -47,17 +52,13 @@ class Maze():
         self.image_data = self.mlx_img_data[0]
         self.line_length = self.mlx_img_data[2]
 
-        #print(self.line_length)
-        
         # Szybkie czyszczenie - używamy bytes o tej samej długości
         self.image_data[:] = len(self.image_data) // 4 * bytes([0,0,0,255])
         
         x, y, j = 0, 0, 0
 
         while y < self.height:
-            #print(f"\n X: {x} Y: {y}")
             pixel = self.output[j:j+4]
-            #print(f"PIXEL: {pixel}")
             if pixel[3] == "1": # gorna
                 start = y * cell * self.line_length + 4 * x * cell
                 end = y * cell * self.line_length + (cell * x + cell + 1) * 4
@@ -73,7 +74,6 @@ class Maze():
             if pixel[0] == "1":
                 for i in range(0, cell):
                     start = (y * cell + i) * self.line_length + x * cell * 4
-                    #print(f"START lewa sciana {start}")
                     end = (y * cell + i) * self.line_length + x*cell * 4 + 4
                     self.image_data[
                             start: end
@@ -97,12 +97,11 @@ class Maze():
         self.draw_entry()
 
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 520, 50)
-    
+
     def clear_image(self):
         self.image_data[:] = len(self.image_data) // 4 * bytes([0,0,0,255])
 
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 520, 50)
-    
 
     def put_maze_to_window(self):
         self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.img_ptr, 520, 50)
@@ -119,19 +118,16 @@ class Maze():
             base_y = y * cell * self.line_length
             base_x = x * cell * 4
 
-            for i in range(2, cell - 2):
+            for i in range(1, cell - 1):
                 row = base_y + i * self.line_length
 
                 start = row + base_x + 2 * 4
-                end = row + base_x + (cell - 2) * 4
+                end = row + base_x + (cell - 1) * 4
 
-                self.image_data[start:end] = (cell - 4) * self.color_42
+                self.image_data[start:end] = (cell - 3) * self.color_42
     
     def draw_entry(self, color_start = bytes([0, 255, 255, 255]), color_end = bytes([255, 0, 255, 255])):
         cell = self.size - 1
-
-        print(self.entry)
-        print(self.exit)
 
         start_x, start_y = self.entry
         end_x, end_y = self.exit
@@ -157,11 +153,13 @@ class Maze():
 
             self.image_data[start:end] = (cell - 4) * color_end
 
-
-
     def draw_path(self, color = bytes([0, 255, 255, 255])):
-        y = self.starty * (self.size - 1)
-        x = self.startx * (self.size - 1)
+        cell = self.size - 1
+
+        start_x, start_y = self.entry
+
+        y = start_y * cell * self.line_length
+        x = start_x * cell * 4
 
         coords = {"N": (0, -1), "S": (0, 1), "W": (-1, 0), "E": (1, 0)}
         for path in self.lines[-1].strip():
