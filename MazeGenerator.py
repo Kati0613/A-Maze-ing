@@ -21,6 +21,7 @@ class MazeGenerator:
         self.put_42()
         self.wilson()
         self.save_output()
+        maze.map = self.maze_map
         return self.prep_maze_str()
 
     def prep_maze_str(self) -> str:
@@ -164,5 +165,5 @@ class MazeGenerator:
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze(400, 400, (0,0), (400,400), True)
+    maze = Maze(400, 400, (0,0), (399,399), True)
     print(len(maze_gen.cerate_maze(maze, 1)))
