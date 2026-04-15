@@ -1,5 +1,4 @@
 from mlx import Mlx
-import time
 from DrawMaze import Maze
 from Image import Image
 from Button import Button
@@ -7,18 +6,17 @@ from typing import List, Union, Set, Generator, Optional, Tuple
 from MazeGenerator import MazeGenerator
 from Maze import Maze as Maze2
 
+
 class Window():
 
-    def __init__(self, output=None, maze_width = 10, maze_height = 10, entry = (0, 0), exit = (10, 10)):
-        self.mlx = Mlx()
+    def __init__(self, output: str = None, maze_width: int = 10,
+                 maze_height: int = 10, entry: Tuple[int, int] = (0, 0),
+                 exit: Tuple[int, int] = (10, 10)) -> None:
+        self.mlx: Mlx = Mlx()
         self.ptr = self.mlx.mlx_init()
-        self.holy = {1485: False, 1482: False, 50: False}
 
-        validator, width, height = self.mlx.mlx_get_screen_size(self.ptr)
+        __, width, height = self.mlx.mlx_get_screen_size(self.ptr)
         self.color = bytes([255, 255, 255, 255])
-
-        if validator != 0:
-            print("Błąd przy pobieraniu rozmiaru ekranu")
 
         self.window = self.mlx.mlx_new_window(
             self.ptr, width, height, "whoores"
@@ -116,21 +114,21 @@ class Window():
 
     def show(self):
         self.button = Image(self.ptr, self.window, self.mlx, 1600, 630)
-        self.papei = Image(self.ptr, self.window, self.mlx, 170, 720, "4837205_print_1.png", False)
-        self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 488, "mouse.png")
-        self.mouse_right = Image(self.ptr, self.window, self.mlx, 1730, 500, "42colormouse.png")
-        self.regenerate = Image(self.ptr, self.window, self.mlx, 1730, 919, "enter.png")
+        self.papei = Image(self.ptr, self.window, self.mlx, 170, 720, "images/4837205_print_1.png", False)
+        self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 488, "images/mouse.png")
+        self.mouse_right = Image(self.ptr, self.window, self.mlx, 1730, 500, "images/42colormouse.png")
+        self.regenerate = Image(self.ptr, self.window, self.mlx, 1730, 919, "images/enter.png")
         self.mlx.mlx_string_put(self.ptr, self.window, 1650, 845, 0xFFFFFF, "Scale:")
-        self.p_key = Image(self.ptr, self.window, self.mlx, 1680, 390, "keyboard_key_p.png")
+        self.p_key = Image(self.ptr, self.window, self.mlx, 1680, 390, "images/keyboard_key_p.png")
         self.button_size = Button(self.ptr, self.window, self.mlx, 1720, 845, 70, 20, self.maze.size)
         self.mlx.mlx_string_put(self.ptr, self.window, 1610, 931, 0xFFFFFF, "Height:")
-        self.up_key = Image(self.ptr, self.window, self.mlx, 1686, 891, "keyboard_key_up.png", True)
-        self.down_key = Image(self.ptr, self.window, self.mlx, 1686, 971, "keyboard_key_down.png", True)
+        self.up_key = Image(self.ptr, self.window, self.mlx, 1686, 891, "images/keyboard_key_up.png", True)
+        self.down_key = Image(self.ptr, self.window, self.mlx, 1686, 971, "images/keyboard_key_down.png", True)
         self.button_height = Button(self.ptr, self.window, self.mlx, 1686, 916, 20, 50, self.maze.height)
         self.mlx.mlx_string_put(self.ptr, self.window, 1520, 931, 0xFFFFFF, "Width:")
         self.button_width = Button(self.ptr, self.window, self.mlx, 1523, 956, 50, 20, self.maze.width)
-        self.left_key = Image(self.ptr, self.window, self.mlx, 1500, 956, "keyboard_key_left.png", True)
-        self.right_key = Image(self.ptr, self.window, self.mlx, 1576, 956, "keyboard_key_right.png", True)
+        self.left_key = Image(self.ptr, self.window, self.mlx, 1500, 956, "images/keyboard_key_left.png", True)
+        self.right_key = Image(self.ptr, self.window, self.mlx, 1576, 956, "images/keyboard_key_right.png", True)
 
         self.up_key.show_button()
         self.down_key.show_button()
