@@ -9,7 +9,7 @@ from Maze import Maze as Maze2
 
 class Window():
 
-    def __init__(self, output: str = None, maze_width: int = 10,
+    def __init__(self, output: str | None = None, maze_width: int = 10,
                  maze_height: int = 10, entry: Tuple[int, int] = (0, 0),
                  exit: Tuple[int, int] = (10, 10)) -> None:
         self.mlx: Mlx = Mlx()

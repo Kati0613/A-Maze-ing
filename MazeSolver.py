@@ -18,7 +18,7 @@ class MazeSolver:
         self.queue.append(self.entry)
         self.visited.add(self.entry)
 
-        while (self.queue)
+        while (self.queue):
             current = self.queue.pop(0)
             if current == self.exit:
                 break
