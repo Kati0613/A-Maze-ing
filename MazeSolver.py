@@ -41,6 +41,7 @@ class MazeSolver:
 
         path.append(self.entry)
         path.reverse()
+        #self.save_output("dupa", path)
         return self.prepere_output(path)
 
     def prepere_output(self, path: List):
@@ -50,6 +51,24 @@ class MazeSolver:
         
         return output
 
+    def save_output(self, file_name: str, path: List):
+        output = ""
+        for i in range(len(path) - 1):
+            cell = path[i]
+
+            if cell - path[i + 1] == self.width:
+                output += "N"
+            elif cell - path[i + 1] == -self.width:
+                output += "S"
+            elif cell - path[i + 1] == 1:
+                output += "W"
+            elif cell - path[i + 1] == -1:
+                output += "E"
+        
+        print(output)
+
+        with open(file_name, "a") as file:
+            file.write(output)
 
     def check_neighbors(self, current: int):
         neighbors = []
@@ -80,4 +99,4 @@ if __name__ == "__main__":
     
     solver = MazeSolver()
     print(gen.cerate_maze(maze, 3))
-    solver.solve_maze(maze)
+    print(solver.solve_maze(maze))
