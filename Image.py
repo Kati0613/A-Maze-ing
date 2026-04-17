@@ -1,9 +1,13 @@
 from mlx import Mlx
+from typing import Any
+from Window import Window
 
 
 class Image():
 
-    def __init__(self, ptr, window, mlx, x = 1600, y= 800, img = "image.png", show = True):
+    def __init__(self, ptr: Any, window: Window, mlx: Mlx, x: int = 1600,
+                 y: int = 800,
+                 img: str = "images/image.png", show: bool = True) -> None:
         self.img_ptr = mlx.mlx_new_image(ptr, 100, 100)
         self.mlx_img_data = mlx.mlx_get_data_addr(self.img_ptr)
         self.img_data = self.mlx_img_data[0]
@@ -24,20 +28,19 @@ class Image():
 
         self.image_data_ptr = img_array[0]
 
-
         self.show = show
 
-            
-    def show_button(self):
-        if self.show == True:
+    def show_button(self) -> None:
+        if self.show is True:
             self.mlx.mlx_png_file_to_image(self.ptr, self.img)
-            self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.original_image, self.x, self.y)
+            self.mlx.mlx_put_image_to_window(self.ptr, self.window,
+                                             self.original_image,
+                                             self.x, self.y)
         else:
             self.erase_button()
-    
-    def erase_button(self):
+
+    def erase_button(self) -> None:
         buffer = self.img_data[0]
         buffer[:] = bytes([0, 0, 0, 255]) * (len(self.color_data) // 4)
-        self.mlx.mlx_put_image_to_window(self.ptr, self.window, self.image_data_ptr, self.x, self.y)
-
-
+        self.mlx.mlx_put_image_to_window(self.ptr, self.window,
+                                         self.image_data_ptr, self.x, self.y)

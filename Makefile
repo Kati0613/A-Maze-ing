@@ -32,5 +32,5 @@ clean:
 	find . -type f -name "*.pyc" -delete
 
 lint:
-	$(BIN)/flake8 . --exclude=$(VENV) mlx_help
+	$(BIN)/flake8 . --exclude=$(VENV)
 	$(BIN)/mypy . --exclude $(VENV) --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
