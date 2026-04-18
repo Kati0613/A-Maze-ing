@@ -1,11 +1,11 @@
-from Window import Window
+#from Window import Window
 from typing import Any
 from mlx import Mlx
 
 
 class Button():
 
-    def __init__(self, ptr: Any, window: Window, mlx: Mlx, x: int = 1600,
+    def __init__(self, ptr: Any, window: Any, mlx: Mlx, x: int = 1600,
                  y: int = 800,
                  width: int = 300, height: int = 300,
                  word: str | None = None) -> None:

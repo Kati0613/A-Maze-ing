@@ -1,11 +1,10 @@
-from Window import Window
 from typing import Any, Tuple
 from mlx import Mlx
 
 
 class Maze():
 
-    def __init__(self, mlx: Mlx, ptr: Any, window: Window, output: str,
+    def __init__(self, mlx: Mlx, ptr: Any, window: Any, output: str,
                  width: int, height: int, entry: Tuple[int, int],
                  exit: Tuple[int, int], path: str) -> None:
         self.mlx = mlx

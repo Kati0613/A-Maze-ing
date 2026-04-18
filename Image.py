@@ -1,11 +1,11 @@
 from mlx import Mlx
 from typing import Any
-from Window import Window
+#from Window import Window
 
 
 class Image():
 
-    def __init__(self, ptr: Any, window: Window, mlx: Mlx, x: int = 1600,
+    def __init__(self, ptr: Any, window: Any, mlx: Mlx, x: int = 1600,
                  y: int = 800,
                  img: str = "images/image.png", show: bool = True) -> None:
         self.img_ptr = mlx.mlx_new_image(ptr, 100, 100)
