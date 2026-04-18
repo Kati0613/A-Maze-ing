@@ -1,17 +1,55 @@
-from Window import Window
-from typing import Any, Tuple
+from typing import Any, Tuple, List
 from mlx import Mlx
 
 
 class Maze():
+    """Represents a drawable maze rendered inside an MLX window.
 
-    def __init__(self, mlx: Mlx, ptr: Any, window: Window, output: str,
+    This class stores maze configuration, rendering parameters, and image
+    buffers used to draw the maze, its special cells, entry and exit points,
+    and the solved path.
+
+    Attributes:
+        mlx (Mlx): MLX wrapper used for image and window operations.
+        window (Any): Window where the maze image is displayed.
+        ptr (Any): Pointer returned by the MLX initialization.
+        fourtytwo_color (bytes): Default RGBA color used for special cells.
+        path (List[Tuple[int, int]]): Solved path through the maze.
+        color (bytes): Default RGBA wall color.
+        color_42 (bytes): Current RGBA color for special cells.
+        output (str): Encoded maze representation, where each cell is described
+            by four characters representing walls.
+        width (int): Maze width in cells.
+        height (int): Maze height in cells.
+        entry (Tuple[int, int]): Coordinates of the maze entry cell.
+        exit (Tuple[int, int]): Coordinates of the maze exit cell.
+        size (int): Current drawing size of one maze cell.
+        max (int): Maximum allowed cell size for rendering.
+    """
+    def __init__(self, mlx: Mlx, ptr: Any, window: Any, output: str,
                  width: int, height: int, entry: Tuple[int, int],
-                 exit: Tuple[int, int], path: str) -> None:
+                 exit: Tuple[int, int], path: List[Tuple[int, int]]
+                 ) -> None:
+        """Initialize a maze object with rendering and layout information.
+
+        Args:
+            mlx (Mlx): MLX wrapper used for drawing operations.
+            ptr (Any): Pointer returned by the MLX initialization.
+            window (Any): Window where the maze will be displayed.
+            output (str): Encoded string describing all maze walls.
+            width (int): Width of the maze in cells.
+            height (int): Height of the maze in cells.
+            entry (Tuple[int, int]): Entry cell coordinates.
+            exit (Tuple[int, int]): Exit cell coordinates.
+            path (List[Tuple[int, int]]): Solved path through the maze.
+
+        Returns:
+            None
+        """
+
         self.mlx = mlx
         self.window = window
         self.ptr = ptr
-        self.fourtytwo = []
         self.fourtytwo_color = bytes([0, 0, 0, 70])
 
         self.x = 0
@@ -39,6 +77,14 @@ class Maze():
             self.max = round(919.15 / height + 0.872)
 
     def update_size(self) -> None:
+        """Recalculate cell size and maximum scale based on maze dimensions.
+
+        The method adjusts `size` and `max` so the maze can still fit into
+        the rendering area after changing its width or height.
+
+        Returns:
+            None
+        """
         if self.width >= self.height:
             self.size = round(870/self.width + 1.2)
             self.max = round(919.15/self.width + 0.872)
@@ -47,7 +93,20 @@ class Maze():
             self.max = round(919.15 / self.height + 0.872)
 
     def draw_maze(self, color: bytes = bytes([255, 255, 255, 255])) -> None:
+        """Draw the full maze into an image buffer and display it in the
+        window.
 
+        This method creates a new image, clears it, draws maze walls based on
+        the encoded `output` string, marks special cells, draws entry and exit
+        points, and finally places the rendered image in the window.
+
+        Args:
+            color (bytes, optional): RGBA color used to draw maze walls.
+                Defaults to white.
+
+        Returns:
+            None
+        """
         self.fourtytwo = []
 
         cell = self.size - 1
@@ -115,6 +174,14 @@ class Maze():
                                          self.img_ptr, 520, 50)
 
     def clear_image(self) -> None:
+        """Clear the current maze image by filling it with a solid background.
+
+        After clearing the image buffer, the updated image is displayed
+        in the application window.
+
+        Returns:
+            None
+        """
         self.image_data[:] = (
             len(self.image_data) // 4 * bytes([0, 0, 0, 255])
         )
@@ -123,10 +190,33 @@ class Maze():
                                          self.img_ptr, 520, 50)
 
     def put_maze_to_window(self) -> None:
+        """Display the current maze image buffer in the application window.
+
+        This method does not redraw the maze. It only places the already
+        prepared image into the window.
+
+        Returns:
+            None
+        """
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
                                          self.img_ptr, 520, 50)
 
-    def draw_fourtytwo(self, color: bytes = None) -> None:
+    def draw_fourtytwo(self, color: bytes | None = None) -> None:
+        """Fill special maze cells with a selected color.
+
+        Special cells are stored in `self.fourtytwo` and are usually detected
+        while parsing the encoded maze representation. If a new color is
+        passed,
+        it becomes the current color for drawing those cells.
+
+        Args:
+            color (bytes | None, optional): RGBA color used to fill special
+                cells. If None, the previously stored color is used.
+                Defaults to None.
+
+        Returns:
+            None
+        """
         cell = self.size - 1
 
         if color:
@@ -148,6 +238,21 @@ class Maze():
 
     def draw_entry(self, color_start: bytes = bytes([170, 125, 125, 255]),
                    color_end: bytes = bytes([255, 0, 125, 255])) -> None:
+        """Draw the entry and exit cells using dedicated colors.
+
+        The entry cell is filled with `color_start`, while the exit cell
+        is filled with `color_end`. This makes both important positions
+        visually distinct from the rest of the maze.
+
+        Args:
+            color_start (bytes, optional): RGBA fill color for the entry cell.
+                Defaults to a muted pink shade.
+            color_end (bytes, optional): RGBA fill color for the exit cell.
+                Defaults to a bright pink shade.
+
+        Returns:
+            None
+        """
         cell = self.size - 1
 
         start_x, start_y = self.entry
@@ -175,6 +280,18 @@ class Maze():
             self.image_data[start:end] = (cell - 4) * color_end
 
     def draw_path(self, color: bytes = bytes([0, 255, 255, 255])) -> None:
+        """Draw the solved maze path on top of the current maze image.
+
+        The method skips the first and last cells of the stored path so the
+        entry and exit remain visually highlighted by `draw_entry()`.
+
+        Args:
+            color (bytes, optional): RGBA color used to draw the solution path.
+                Defaults to cyan.
+
+        Returns:
+            None
+        """
         cell = self.size - 1
 
         start_x, start_y = self.entry
