@@ -261,7 +261,7 @@ class Window():
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze2(10, 10, (0, 0), (4, 2), False)
+    maze = Maze2(10, 10, (0, 0), (9, 9), False)
     output = maze_gen.cerate_maze(maze, 1)
     solver = MazeSolver()
     window = Window(output, maze.width, maze.height, maze.entry,

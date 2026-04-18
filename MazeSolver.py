@@ -43,6 +43,38 @@ class MazeSolver:
         path.reverse()
         #self.save_output("dupa", path)
         return self.prepere_output(path)
+    
+    def solve_maze_steps(self, maze: Maze):
+        self.prepere_data(maze)
+        self.queue.append(self.entry)
+        self.visited.add(self.entry)
+
+        while self.queue:
+            current = self.queue.popleft()
+
+            yield [(cell % self.width, cell // self.width) for cell in self.visited]
+
+            if current == self.exit:
+                break
+            neighbors = self.check_neighbors(current)
+            #print("currnet: ", current, "neighbors: ", neighbors)
+            for n in neighbors:
+                if n not in self.visited:
+                    self.visited.add(n)
+                    self.queue.append(n)
+                    self.came_from[n] = current
+        
+        path = []
+        current = self.exit
+
+        while current != self.entry:
+            path.append(current)
+            current = self.came_from[current]
+
+        path.append(self.entry)
+        path.reverse()
+        #self.save_output("dupa", path)
+        return self.prepere_output(path)
 
     def prepere_output(self, path: List):
         output = []
@@ -98,5 +130,6 @@ if __name__ == "__main__":
     gen = MazeGenerator()
     
     solver = MazeSolver()
-    print(gen.cerate_maze(maze, 3))
-    print(solver.solve_maze(maze))
+    print(gen.cerate_maze(maze, 1))
+    for step in solver.solve_maze_steps(maze):
+        print(step)
