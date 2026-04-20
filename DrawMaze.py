@@ -113,6 +113,9 @@ class Maze():
         img_w = self.width * cell + 1
         img_h = self.height * cell + 1
 
+        self.window_pos_x = int((1920 - img_w) / 2)
+        self.window_pos_y = int((1080 - img_h) / 2) - 30
+
         self.img_ptr = self.mlx.mlx_new_image(self.ptr, img_w, img_h)
         self.mlx_img_data = self.mlx.mlx_get_data_addr(self.img_ptr)
         self.image_data = self.mlx_img_data[0]
@@ -171,7 +174,8 @@ class Maze():
         self.draw_entry()
 
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
-                                         self.img_ptr, 520, 50)
+                                         self.img_ptr, self.window_pos_x,
+                                         self.window_pos_y)
 
     def clear_image(self) -> None:
         """Clear the current maze image by filling it with a solid background.
@@ -186,8 +190,7 @@ class Maze():
             len(self.image_data) // 4 * bytes([0, 0, 0, 255])
         )
 
-        self.mlx.mlx_put_image_to_window(self.ptr, self.window,
-                                         self.img_ptr, 520, 50)
+        self.put_maze_to_window()
 
     def put_maze_to_window(self) -> None:
         """Display the current maze image buffer in the application window.
@@ -199,7 +202,8 @@ class Maze():
             None
         """
         self.mlx.mlx_put_image_to_window(self.ptr, self.window,
-                                         self.img_ptr, 520, 50)
+                                         self.img_ptr, self.window_pos_x,
+                                         self.window_pos_y)
 
     def draw_fourtytwo(self, color: bytes | None = None) -> None:
         """Fill special maze cells with a selected color.
@@ -312,5 +316,4 @@ class Maze():
                     + 4 * (x + self.size - 3)
                     ] = (self.size - 5) * color
 
-        self.mlx.mlx_put_image_to_window(
-            self.ptr, self.window, self.img_ptr, 520, 50)
+        self.put_maze_to_window()

@@ -78,7 +78,7 @@ class Window():
         self.papa = True
 
         self.button = Image(self.ptr, self.window, self.mlx, 1600, 630)
-        self.papei = Image(self.ptr, self.window, self.mlx, 170, 720,
+        self.papei = Image(self.ptr, self.window, self.mlx, 140, 720,
                            "images/4837205_print_1.png", False)
         self.mouse_left = Image(self.ptr, self.window, self.mlx, 1640, 488,
                                 "images/mouse.png")
@@ -108,6 +108,8 @@ class Window():
                               "images/keyboard_key_left.png", True)
         self.right_key = Image(self.ptr, self.window, self.mlx, 1576, 956,
                                "images/keyboard_key_right.png", True)
+        self.mouse_scroll = Image(self.ptr, self.window, self.mlx, 1800, 825,
+                                  "images/scroll.png", True)
 
     def key_event(self, key: int, param: Any = None) -> None:
         """Handle keyboard input events.
@@ -130,11 +132,10 @@ class Window():
         if key == 65307:
             self.close(param)
         elif key == 112:
+            self.path_show = not self.path_show
             if self.path_show:
-                self.path_show = False
                 self.maze.draw_path(bytes([0, 255, 255, 255]))
             else:
-                self.path_show = True
                 self.maze.draw_path(bytes([0, 0, 0, 255]))
         elif key == 106:
             self.papei.show = not self.papei.show
@@ -222,7 +223,8 @@ class Window():
         """
         self.maze.clear_image()
         self.maze.draw_maze(self.color)
-        self.maze.draw_path(bytes([0, 255, 255, 255]))
+        if self.path_show:
+            self.maze.draw_path(bytes([0, 255, 255, 255]))
 
     def close(self, param: Any) -> None:
         """Close the application window and exit the MLX loop.
@@ -256,6 +258,7 @@ class Window():
         self.p_key.show_button()
         self.mouse_right.show_button()
         self.regenerate.show_button()
+        self.mouse_scroll.show_button()
         self.mlx.mlx_loop(self.ptr)
 
 
