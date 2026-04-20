@@ -134,7 +134,7 @@ class Window():
         elif key == 112:
             self.path_show = not self.path_show
             if self.path_show:
-                self.maze.draw_path(bytes([0, 255, 255, 255]))
+                self.maze.draw_path(bytes([0, 255, 125, 255]))
             else:
                 self.maze.draw_path(bytes([0, 0, 0, 255]))
         elif key == 106:

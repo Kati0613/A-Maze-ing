@@ -268,7 +268,6 @@ class Maze():
         Returns:
             None
         """
-        #cell = self.size - 1
 
         start_x, start_y = self.entry
         end_x, end_y = self.exit
@@ -317,15 +316,16 @@ class Maze():
         path = self.path[1:-1]
 
         for coor in path:
-            y = coor[1] * (self.size - 1)
-            x = coor[0] * (self.size - 1)
-            for i in range(3, self.size - 2):
+            y = coor[1] * self.cell
+            x = coor[0] * self.cell
+
+            for i in range(1, self.cell - 1):
                 self.image_data[
-                    (y + i) * self.line_length
-                    + 4 * (x + 2):
-                    (y + i) * self.line_length
-                    + 4 * (x + self.size - 3)
-                    ] = (self.size - 5) * color
+                        (y + i) * self.line_length
+                        + 4 * (x + 2):
+                        (y + i) * self.line_length
+                        + 4 * (x + self.cell - 1)
+                ] = (self.cell - 3) * color
 
         self.put_maze_to_window()
 
@@ -336,16 +336,23 @@ class Maze():
         if self.animating:
             try:
                 coor = next(self.gen)
-                y = coor[1] * (self.size - 1)
-                x = coor[0] * (self.size - 1)
-                for i in range(3, self.size - 2):
+
+                y = coor[1] * self.cell
+                x = coor[0] * self.cell
+
+                for i in range(1, self.cell - 1):
                     self.image_data[
                         (y + i) * self.line_length
                         + 4 * (x + 2):
                         (y + i) * self.line_length
-                        + 4 * (x + self.size - 3)
-                        ] = (self.size - 5) * bytes([0, 255, 255, 255])
+                        + 4 * (x + self.cell - 1)
+                    ] = (self.cell - 3) * bytes([0, 255, 125, 255])
                 self.put_maze_to_window()
             except StopIteration:
                 self.animating = False
         return
+
+# row = base_y + i * self.line_length
+
+#                 start = row + base_x + 2 * 4
+#                 end = row + base_x + (self.cell - 1) * 4
