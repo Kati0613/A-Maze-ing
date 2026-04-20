@@ -131,5 +131,13 @@ if __name__ == "__main__":
     
     solver = MazeSolver()
     print(gen.cerate_maze(maze, 1))
+
+    # gen = solver.solve_maze_steps(maze)
+    # print(next(gen))  # krok 1
+    # print(next(gen))  # krok 2
+    # print(next(gen))  # krok 3
+
     for step in solver.solve_maze_steps(maze):
-        print(step)
+          print(step)
+    
+    print(solver.solve_maze_steps(maze))

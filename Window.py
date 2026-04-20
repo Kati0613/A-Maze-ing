@@ -62,7 +62,7 @@ class Window():
             )
 
         self.output = output
-        self.path_show = False
+        self.path_show = True
 
         self.path = path
 
@@ -224,7 +224,8 @@ class Window():
         self.maze.clear_image()
         self.maze.draw_maze(self.color)
         if self.path_show:
-            self.maze.draw_path(bytes([0, 255, 255, 255]))
+            self.maze.reset_animation()
+            self.maze.animating = True
 
     def close(self, param: Any) -> None:
         """Close the application window and exit the MLX loop.
@@ -247,7 +248,6 @@ class Window():
         Returns:
             None
         """
-        # self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_maze(), None) <- animacja
         self.up_key.show_button()
         self.down_key.show_button()
         self.button.show_button()
@@ -259,6 +259,7 @@ class Window():
         self.mouse_right.show_button()
         self.regenerate.show_button()
         self.mouse_scroll.show_button()
+        self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_animated_path, None)
         self.mlx.mlx_loop(self.ptr)
 
 
