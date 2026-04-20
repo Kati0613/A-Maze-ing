@@ -24,3 +24,4 @@ Frontend developer
 ## Instructions
 
 ## Resources
+AI was used well.
