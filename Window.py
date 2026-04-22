@@ -2,7 +2,7 @@ from mlx import Mlx
 from DrawMaze import Maze
 from Image import Image
 from Button import Button
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Iterator
 from MazeGenerator import MazeGenerator
 from Maze import Maze as Maze2
 from MazeSolver import MazeSolver
@@ -29,10 +29,12 @@ class Window():
         maze (Maze): Graphical maze object responsible for rendering.
     """
 
-    def __init__(self, output: str, maze_width: int = 10,
+    def __init__(self, output: str, generator: Iterator,
+                 maze_width: int = 10,
                  maze_height: int = 10, entry: Tuple[int, int] = (0, 0),
                  exit: Tuple[int, int] = (10, 10),
-                 path: List[Tuple[int, int]] = []) -> None:
+                 path: List[Tuple[int, int]] = [],
+                 ) -> None:
         """Initialize the main application window and all interface elements.
 
         Args:
@@ -65,12 +67,13 @@ class Window():
         self.path_show = True
 
         self.path = path
+        self.generator = generator
 
         self.entry = entry
         self.exit = exit
 
         self.maze = Maze(self.mlx, self.ptr, self.window, output,
-                         maze_width, maze_height, entry, exit, path)
+                         maze_width, maze_height, entry, exit, path, generator)
 
         self.mlx.mlx_hook(self.window, 33, 0, self.close, None)
         self.mlx.mlx_hook(self.window, 4, 1 << 2, self.mouse_click, None)
@@ -110,6 +113,8 @@ class Window():
                                "images/keyboard_key_right.png", True)
         self.mouse_scroll = Image(self.ptr, self.window, self.mlx, 1800, 825,
                                   "images/scroll.png", True)
+        self.amazing_title = Image(self.ptr, self.window, self.mlx, 50, 50,
+                                   "images/a-maze-ing-title.png", True)
 
     def key_event(self, key: int, param: Any = None) -> None:
         """Handle keyboard input events.
@@ -134,7 +139,7 @@ class Window():
         elif key == 112:
             self.path_show = not self.path_show
             if self.path_show:
-                self.maze.draw_path(bytes([0, 255, 125, 255]))
+                self.maze.draw_path(bytes(([255, 153, 204, 255])))
             else:
                 self.maze.draw_path(bytes([0, 0, 0, 255]))
         elif key == 106:
@@ -164,7 +169,8 @@ class Window():
             solver = MazeSolver()
             self.maze.output = maze_gen.cerate_maze(maze)
             self.maze.path = solver.solve_maze(maze)
-            self.redraw()
+            self.maze.gen_overlfow = solver.solve_maze_steps(maze)
+            self.redraw_animated()
         elif key == 65362:
             self.button_height.update_int(1, 150, 10)
         elif key == 65364:
@@ -212,7 +218,7 @@ class Window():
                     self.maze.draw_fourtytwo(color)
                     self.maze.put_maze_to_window()
 
-    def redraw(self) -> None:
+    def redraw_animated(self) -> None:
         """Clear and redraw the maze using the current settings.
 
         The maze is redrawn with the currently selected color and the path
@@ -225,7 +231,24 @@ class Window():
         self.maze.draw_maze(self.color)
         if self.path_show:
             self.maze.reset_animation()
-            self.maze.animating = True
+    
+    def animation(self, param):
+        self.maze.draw_animated_generation(param)
+        self.maze.draw_animated_path(param)
+    
+    def redraw(self) -> None:
+        """Clear and redraw the maze using the current settings.
+
+        The maze is redrawn with the currently selected color and the path
+        is rendered afterward.
+
+        Returns:
+            None
+        """
+        self.maze.clear_image()
+        self.maze.draw_maze(self.color)
+        if self.path_show:
+            self.maze.draw_path()
 
     def close(self, param: Any) -> None:
         """Close the application window and exit the MLX loop.
@@ -259,15 +282,16 @@ class Window():
         self.mouse_right.show_button()
         self.regenerate.show_button()
         self.mouse_scroll.show_button()
-        self.mlx.mlx_loop_hook(self.ptr, self.maze.draw_animated_path, None)
+        self.amazing_title.show_button()
+        self.mlx.mlx_loop_hook(self.ptr, self.animation, None)
         self.mlx.mlx_loop(self.ptr)
 
 
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
-    maze = Maze2(10, 10, (0, 0), (9, 9), False)
+    maze = Maze2(20, 20, (0, 0), (9, 9), False)
     output = maze_gen.cerate_maze(maze, 1)
     solver = MazeSolver()
-    window = Window(output, maze.width, maze.height, maze.entry,
+    window = Window(output, solver.solve_maze_steps(maze), maze.width, maze.height, maze.entry,
                     maze.exit, solver.solve_maze(maze))
     window.show()

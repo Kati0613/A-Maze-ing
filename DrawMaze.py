@@ -1,6 +1,6 @@
-from typing import Any, Tuple, List
+from typing import Any, Tuple, List, Iterator
 from mlx import Mlx
-
+from random import randint
 
 class Maze():
     """Represents a drawable maze rendered inside an MLX window.
@@ -33,7 +33,8 @@ class Maze():
 
     def __init__(self, mlx: Mlx, ptr: Any, window: Any, output: str,
                  width: int, height: int, entry: Tuple[int, int],
-                 exit: Tuple[int, int], path: List[Tuple[int, int]]
+                 exit: Tuple[int, int], path: List[Tuple[int, int]],
+                 generator: Iterator
                  ) -> None:
         """Initialize a maze object with rendering and layout information.
 
@@ -63,6 +64,7 @@ class Maze():
         self.z = 0
 
         self.path = path
+        self.gen_overlfow = generator
 
         self.color = bytes([255, 255, 255, 255])
         self.color_42 = bytes([255, 255, 255, 255])
@@ -85,6 +87,7 @@ class Maze():
         self.cell = self.size - 1
 
         self.animating = True
+        self.animated_generation = True
 
     def update_size(self) -> None:
         """Recalculate cell size and maximum scale based on maze dimensions.
@@ -250,9 +253,29 @@ class Maze():
                 end = row + base_x + (self.cell - 1) * 4
 
                 self.image_data[start:end] = (self.cell - 3) * self.color_42
+    
+    def clear_cells(self):
+        for y in range(self.height):
+            for x in range(self.width):
 
-    def draw_entry(self, color_start: bytes = bytes([170, 125, 125, 255]),
-                   color_end: bytes = bytes([255, 0, 125, 255])) -> None:
+                if (x, y) == self.entry or (x, y) == self.exit or [x, y] in self.fourtytwo:
+                    continue
+
+                cell_x = x * self.cell
+                cell_y = y * self.cell
+
+                for i in range(1, self.cell - 1):
+                    self.image_data[
+                        (cell_y + i) * self.line_length
+                        + 4 * (cell_x + 2):
+                        (cell_y + i) * self.line_length
+                        + 4 * (cell_x + self.cell - 1)
+                    ] = (self.cell - 3) * bytes([0, 0, 0, 255])
+
+        self.put_maze_to_window()
+
+    def draw_entry(self, color_start: bytes = bytes([204, 255, 153, 255]),
+                   color_end: bytes = bytes([255, 153, 255, 255])) -> None:
         """Draw the entry and exit cells using dedicated colors.
 
         The entry cell is filled with `color_start`, while the exit cell
@@ -293,7 +316,7 @@ class Maze():
 
             self.image_data[start:end] = (self.cell - 4) * color_end
 
-    def draw_path(self, color: bytes = bytes([0, 255, 255, 255])) -> None:
+    def draw_path(self, color: bytes = bytes([255, 153, 204, 255])) -> None:
         """Draw the solved maze path on top of the current maze image.
 
         The method skips the first and last cells of the stored path so the
@@ -306,8 +329,6 @@ class Maze():
         Returns:
             None
         """
-        #cell = self.size - 1
-
         start_x, start_y = self.entry
 
         y = start_y * self.cell * self.line_length
@@ -331,9 +352,11 @@ class Maze():
 
     def reset_animation(self):
         self.gen = self.generator(self.path[1:-1])
+        self.animated_generation = True
+        self.animating = True
 
     def draw_animated_path(self, param):
-        if self.animating:
+        if self.animating and not self.animated_generation:
             try:
                 coor = next(self.gen)
 
@@ -346,10 +369,42 @@ class Maze():
                         + 4 * (x + 2):
                         (y + i) * self.line_length
                         + 4 * (x + self.cell - 1)
-                    ] = (self.cell - 3) * bytes([0, 255, 125, 255])
+                    ] = (self.cell - 3) * bytes([255, 153, 204, 255])
                 self.put_maze_to_window()
             except StopIteration:
                 self.animating = False
+        return
+    
+    def draw_animated_generation(self, param):
+        if self.animated_generation:
+            try:
+                colored = next(self.gen_overlfow)
+
+                for coor in colored:
+                    if self.entry[0] == coor[0] and self.entry[1] == coor[1]:
+                        continue
+                    elif self.exit[0] == coor[0] and self.exit[1] == coor[1]:
+                        continue
+                    y = coor[1] * self.cell
+                    x = coor[0] * self.cell
+
+                    color = bytes([randint(0,255), randint(0,255), randint(0, 255), 105])
+
+                    if color == bytes([0,0,0,255]):
+                        color = bytes([0,0,255,255])
+
+                    for i in range(1, self.cell - 1):
+                        self.image_data[
+                            (y + i) * self.line_length
+                            + 4 * (x + 2):
+                            (y + i) * self.line_length
+                            + 4 * (x + self.cell - 1)
+                        ] = (self.cell - 3) * color
+                self.put_maze_to_window()
+            except StopIteration:
+                if self.animated_generation is True:
+                    self.clear_cells()
+                self.animated_generation = False
         return
 
 # row = base_y + i * self.line_length
