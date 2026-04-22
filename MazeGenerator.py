@@ -20,9 +20,30 @@ class MazeGenerator:
 
         self.put_42()
         self.wilson()
+        if not self.is_perfect:
+            self.make_imperfect(0.1)
         self.save_output()
         maze.map = self.maze_map
         return self.prep_maze_str()
+
+    def make_imperfect(self, probability: float = 0.1):
+        for cell in range(self.width * self.height):
+            if cell in self.pattern:
+                continue
+            x = cell % self.width
+            y = cell // self.width
+            
+            # spróbuj usunąć ścianę w prawo
+            if x < self.width - 1 and cell + 1 not in self.pattern:
+                if self.maze_random.random() < probability:
+                    neighbor = cell + 1
+                    self.trim_wall(cell, neighbor)
+
+            # spróbuj usunąć ścianę w dół
+            if y < self.height - 1 and cell + self.width not in self.pattern:
+                if self.maze_random.random() < probability:
+                    neighbor = cell + self.width
+                    self.trim_wall(cell, neighbor)
 
     def prep_maze_str(self) -> str:
         maze_str: str = ""
