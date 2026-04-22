@@ -53,7 +53,7 @@ class MazeSolver:
             current = self.queue.popleft()
             visited_new = []
             #yield [(cell % self.width, cell // self.width) for cell in self.visited]
-            print([(cell % self.width, cell // self.width) for cell in self.visited])
+            #print([(cell % self.width, cell // self.width) for cell in self.visited])
             if current == self.exit:
                 break
             neighbors = self.check_neighbors(current)
@@ -64,8 +64,8 @@ class MazeSolver:
                     visited_new.append((n % self.width, n // self.width))
                     self.queue.append(n)
                     self.came_from[n] = current
-            #syield(visited_new)
-            print("new: ", visited_new)
+            yield(visited_new)
+            #print("new: ", visited_new)
         
         path = []
         current = self.exit
