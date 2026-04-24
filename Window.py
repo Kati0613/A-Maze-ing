@@ -3,9 +3,9 @@ from DrawMaze import Maze
 from Image import Image
 from Button import Button
 from typing import List, Tuple, Any, Iterator
-from MazeGenerator import MazeGenerator
-from Maze import Maze as Maze2
-from MazeSolver import MazeSolver
+from mazegen.MazeGenerator import MazeGenerator
+from mazegen.Maze import Maze as Maze2
+from mazegen.MazeSolver import MazeSolver
 
 
 class Window():

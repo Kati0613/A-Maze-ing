@@ -1,4 +1,10 @@
-def load_config(file_name: str) -> any:
+from mazegen.MazeGenerator import MazeGenerator
+from mazegen.MazeSolver import MazeSolver
+from mazegen.Maze import Maze as Maze2
+from Window import Window
+from typing import Tuple
+
+def load_config(file_name: str) -> Tuple[int, int, Tuple[int, int], Tuple[int, int], str, bool]:
     config = {}
 
     with open(file_name, "r") as f:
@@ -31,7 +37,14 @@ def load_config(file_name: str) -> any:
 
     return width, height, entry, exit, output_file, perfect
 
-def validate_config(width: int, height: int, entry: tuple, exit: tuple, output_file: str, perfect: bool):
+def validate_config(
+    width: int,
+    height: int,
+    entry: Tuple[int, int],
+    exit: Tuple[int, int],
+    output_file: str,
+    perfect: bool,
+) -> None:
     if (width < 10):
         raise ValueError("Width must be greater than 9")
     if (height < 10):
@@ -51,5 +64,11 @@ if __name__ == "__main__":
     config_name = "config.txt"
     width, height, entry, exit, output_file, perfect = load_config(config_name)
     validate_config(width, height, entry, exit, output_file, perfect)
-
-    
+    maze_gen = MazeGenerator()
+    maze = Maze2(width, height, entry, exit, perfect)
+    output = maze_gen.cerate_maze(maze,output_file, 1)
+    solver = MazeSolver()
+    window = Window(output, solver.solve_maze_steps(maze), maze.width,
+                    maze.height, maze.entry, maze.exit, solver.solve_maze(maze)
+                    )
+    window.show()
