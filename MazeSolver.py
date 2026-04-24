@@ -1,11 +1,11 @@
-from typing import List
+from typing import Iterator, List, Tuple
 from Maze import Maze
 from MazeGenerator import MazeGenerator
 from collections import deque
 
 
 class MazeSolver:
-    def prepere_data(self, maze: Maze):
+    def prepere_data(self, maze: Maze) -> None:
         """Initialize solver state from the provided maze instance.
 
         Args:
@@ -21,7 +21,7 @@ class MazeSolver:
         self.visited: set = set()
         self.came_from: dict = {}
 
-    def solve_maze(self, maze: Maze):
+    def solve_maze(self, maze: Maze) -> List[Tuple[int, int]]:
         """Solve the maze using breadth-first search
         and return full path coordinates.
 
@@ -57,7 +57,7 @@ class MazeSolver:
         path.reverse()
         return self.prepere_output(path)
 
-    def solve_maze_steps(self, maze: Maze):
+    def solve_maze_steps(self, maze: Maze) -> Iterator[List[Tuple[int, int]]]:
         """Solve the maze step-by-step and yield newly
         visited cells per BFS iteration.
 
@@ -99,7 +99,7 @@ class MazeSolver:
         path.reverse()
         return self.prepere_output(path)
 
-    def prepere_output(self, path: List):
+    def prepere_output(self, path: List[int]) -> List[Tuple[int, int]]:
         """Convert a path of linear cell indices into (x, y) coordinates.
 
         Args:
@@ -114,7 +114,7 @@ class MazeSolver:
 
         return output
 
-    def save_output(self, file_name: str, path: List):
+    def save_output(self, file_name: str, path: List[int]) -> None:
         """Serialize path directions and append them to a file.
 
         Direction mapping:
@@ -142,7 +142,7 @@ class MazeSolver:
         with open(file_name, "a") as file:
             file.write(output)
 
-    def check_neighbors(self, current: int):
+    def check_neighbors(self, current: int) -> List[int]:
         """Return reachable neighbors of a cell based on wall bit flags.
 
         Args:
