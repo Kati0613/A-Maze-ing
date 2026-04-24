@@ -22,7 +22,8 @@ class MazeSolver:
         self.came_from: dict = {}
 
     def solve_maze(self, maze: Maze):
-        """Solve the maze using breadth-first search and return full path coordinates.
+        """Solve the maze using breadth-first search
+        and return full path coordinates.
 
         Args:
             maze: Maze object to solve.
@@ -57,7 +58,8 @@ class MazeSolver:
         return self.prepere_output(path)
 
     def solve_maze_steps(self, maze: Maze):
-        """Solve the maze step-by-step and yield newly visited cells per BFS iteration.
+        """Solve the maze step-by-step and yield newly
+        visited cells per BFS iteration.
 
         Args:
             maze: Maze object to solve.
@@ -84,7 +86,7 @@ class MazeSolver:
                     visited_new.append((n % self.width, n // self.width))
                     self.queue.append(n)
                     self.came_from[n] = current
-            yield(visited_new)
+            yield visited_new
 
         path = []
         current = self.exit

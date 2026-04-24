@@ -40,7 +40,8 @@ class MazeGenerator:
         return self.prep_maze_str()
 
     def make_imperfect(self, probability: float = 0.1):
-        """Randomly remove additional walls to create loops in a non-perfect maze.
+        """Randomly remove additional walls to
+        create loops in a non-perfect maze.
 
         Args:
             probability: Chance to remove each candidate wall.
@@ -95,7 +96,8 @@ class MazeGenerator:
         return result
 
     def check_3x3_around(self, cell):
-        """Scan nearby coordinates and detect whether any 3x3 area is fully open.
+        """Scan nearby coordinates and detect whether any 3x3
+        area is fully open.
 
         Args:
             cell: Cell index around which to scan.
