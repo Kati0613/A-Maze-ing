@@ -17,11 +17,13 @@ def load_config(file_name: str) -> Tuple[int, int, Tuple[int, int], Tuple[int, i
             key, value = line.split("=", 1)
             config[key.strip()] = value.strip()
 
-    required_keys = ["WIDTH", "HEIGHT", "ENTRY", "EXIT", "OUTPUT_FILE", "PERFECT"]
+    required_keys = ["WIDTH", "HEIGHT", "ENTRY",
+                     "EXIT", "OUTPUT_FILE", "PERFECT"]
 
     missing = [key for key in required_keys if key not in config]
     if missing:
-        raise ValueError(f"Brak wymaganych pól w configu: {', '.join(missing)}")
+        raise ValueError(
+            f"Brak wymaganych pól w configu: {', '.join(missing)}")
 
     width = int(config["WIDTH"])
     height = int(config["HEIGHT"])
@@ -30,7 +32,7 @@ def load_config(file_name: str) -> Tuple[int, int, Tuple[int, int], Tuple[int, i
     entry = (int(x), int(y))
     x, y = config["EXIT"].split(",")
     exit = (int(x), int(y))
-    
+
     output_file = config["OUTPUT_FILE"]
 
     perfect = config["PERFECT"].lower() == "true"
@@ -57,8 +59,9 @@ def validate_config(
         raise ValueError("Entry and exit cannot be the same")
     if not output_file.endswith(".txt"):
         raise ValueError("Output file must have a .txt extension")
-    if perfect != True and perfect != False:
+    if perfect is not True and perfect is not False:
         raise ValueError("Is perfect must be true or false")
+
 
 if __name__ == "__main__":
     config_name = "config.txt"

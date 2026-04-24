@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by <kkulagow>[,<zgorecka>].
+*This project has been created as part of the 42 curriculum by kkulagow, zgorecka.*
 
 # A-Maze-ing
 
@@ -99,6 +99,19 @@ As the project evolved, we adapted our approach:
 - Visual Studio Code
 
 ## Instructions
+The project uses a Makefile to simplify common development tasks such as environment setup, running the application, building the package, code quality checks, and cleaning the project.
+
+- **install** – creates a Python virtual environment and installs all required dependencies, including development tools and optional packages from `requirements.txt` if available.
+
+- **run** – executes the main application using the default configuration file and generates the maze output.
+
+- **debug** – starts the application in debugging mode using Python’s built-in debugger, allowing step-by-step execution.
+
+- **build** – builds the project into distributable formats (wheel and source archive), preparing it for distribution or reuse.
+
+- **lint** – runs static code analysis tools to check code style and type correctness.
+
+- **clean** – removes all generated files, including the virtual environment, caches, and build artifacts, restoring the project to a clean state.
 
 ## Resources
 AI was used as a supporting tool during the development of the project, mainly for improving code quality and documentation.
