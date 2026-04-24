@@ -4,7 +4,12 @@ from mazegen.Maze import Maze
 
 
 class MazeGenerator:
-    def cerate_maze(self, maze: Maze, file_name: str, seed: Optional[int] = None) -> str:
+    def cerate_maze(
+        self,
+        maze: Maze,
+        file_name: str,
+        seed: Optional[int] = None
+            ) -> str:
         """Generate a maze map and return its bit-string representation.
 
         Args:
@@ -201,7 +206,6 @@ class MazeGenerator:
             file.write("\n")
             file.write(f"{entry_x},{entry_y}\n")
             file.write(f"{exit_x},{exit_y}\n")
-            file.write("dupa")
 
     def wilson(self):
         """Generate maze corridors using Wilson's algorithm.

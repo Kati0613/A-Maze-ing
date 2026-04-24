@@ -21,7 +21,7 @@ class MazeSolver:
         self.visited: set = set()
         self.came_from: dict = {}
 
-    def solve_maze(self, maze: Maze) -> List[Tuple[int, int]]:
+    def solve_maze(self, maze: Maze, file_name: str) -> List[Tuple[int, int]]:
         """Solve the maze using breadth-first search
         and return full path coordinates.
 
@@ -55,6 +55,7 @@ class MazeSolver:
 
         path.append(self.entry)
         path.reverse()
+        self.save_output(file_name, path)
         return self.prepere_output(path)
 
     def solve_maze_steps(self, maze: Maze) -> Iterator[List[Tuple[int, int]]]:
@@ -136,8 +137,6 @@ class MazeSolver:
                 output += "W"
             elif cell - path[i + 1] == -1:
                 output += "E"
-
-        print(output)
 
         with open(file_name, "a") as file:
             file.write(output)

@@ -1,10 +1,16 @@
+from typing import Tuple
+
+from Window import Window
+from mazegen.Maze import Maze as Maze2
 from mazegen.MazeGenerator import MazeGenerator
 from mazegen.MazeSolver import MazeSolver
 from mazegen.Maze import Maze as Maze2
 from Window import Window
 from typing import Tuple
 
-def load_config(file_name: str) -> Tuple[int, int, Tuple[int, int], Tuple[int, int], str, bool]:
+def load_config(
+    file_name: str,
+) -> Tuple[int, int, Tuple[int, int], Tuple[int, int], str, bool]:
     config = {}
 
     with open(file_name, "r") as f:
@@ -17,13 +23,18 @@ def load_config(file_name: str) -> Tuple[int, int, Tuple[int, int], Tuple[int, i
             key, value = line.split("=", 1)
             config[key.strip()] = value.strip()
 
-    required_keys = ["WIDTH", "HEIGHT", "ENTRY",
-                     "EXIT", "OUTPUT_FILE", "PERFECT"]
+    required_keys = [
+        "WIDTH",
+        "HEIGHT",
+        "ENTRY",
+        "EXIT",
+        "OUTPUT_FILE",
+        "PERFECT",
+    ]
 
     missing = [key for key in required_keys if key not in config]
     if missing:
-        raise ValueError(
-            f"Brak wymaganych pól w configu: {', '.join(missing)}")
+        raise ValueError(f"Missing fields in config: {', '.join(missing)}")
 
     width = int(config["WIDTH"])
     height = int(config["HEIGHT"])
@@ -39,6 +50,7 @@ def load_config(file_name: str) -> Tuple[int, int, Tuple[int, int], Tuple[int, i
 
     return width, height, entry, exit, output_file, perfect
 
+
 def validate_config(
     width: int,
     height: int,
@@ -47,15 +59,15 @@ def validate_config(
     output_file: str,
     perfect: bool,
 ) -> None:
-    if (width < 10):
+    if width < 10:
         raise ValueError("Width must be greater than 9")
-    if (height < 10):
+    if height < 10:
         raise ValueError("Height must be grater than 9")
-    if (entry[0] >= width or entry[1] >= height):
+    if entry[0] >= width or entry[1] >= height:
         raise ValueError("Entry is outside the maze")
-    if (exit[0] >= width or exit[1] >= height):
+    if exit[0] >= width or exit[1] >= height:
         raise ValueError("Exit is outside the maze")
-    if (entry == exit):
+    if entry == exit:
         raise ValueError("Entry and exit cannot be the same")
     if not output_file.endswith(".txt"):
         raise ValueError("Output file must have a .txt extension")
@@ -71,7 +83,13 @@ if __name__ == "__main__":
     maze = Maze2(width, height, entry, exit, perfect)
     output = maze_gen.cerate_maze(maze,output_file, 1)
     solver = MazeSolver()
-    window = Window(output, solver.solve_maze_steps(maze), maze.width,
-                    maze.height, maze.entry, maze.exit, solver.solve_maze(maze)
-                    )
+    window = Window(
+        output,
+        solver.solve_maze_steps(maze),
+        maze.width,
+        maze.height,
+        maze.entry,
+        maze.exit,
+        solver.solve_maze(maze, output_file),
+    )
     window.show()
