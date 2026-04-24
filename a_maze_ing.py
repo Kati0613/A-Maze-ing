@@ -88,5 +88,6 @@ if __name__ == "__main__":
         maze.entry,
         maze.exit,
         solver.solve_maze(maze, output_file),
+        output_file,
     )
     window.show()

@@ -98,7 +98,6 @@ class MazeSolver:
 
         path.append(self.entry)
         path.reverse()
-        return self.prepere_output(path)
 
     def prepere_output(self, path: List[int]) -> List[Tuple[int, int]]:
         """Convert a path of linear cell indices into (x, y) coordinates.
@@ -178,7 +177,7 @@ if __name__ == "__main__":
     gen = MazeGenerator()
 
     solver = MazeSolver()
-    print(gen.cerate_maze(maze, 1))
+    print(gen.cerate_maze(maze, "test.txt", 1))
 
     for step in solver.solve_maze_steps(maze):
         print(step)

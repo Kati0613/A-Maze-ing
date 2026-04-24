@@ -44,7 +44,7 @@ class MazeGenerator:
         maze.map = self.maze_map
         return self.prep_maze_str()
 
-    def make_imperfect(self, probability: float = 0.1):
+    def make_imperfect(self, probability: float = 0.1) -> None:
         """Randomly remove additional walls to
         create loops in a non-perfect maze.
 
@@ -71,7 +71,7 @@ class MazeGenerator:
                     if not self.creates_large_open_area(cell, neighbor):
                         self.trim_wall(cell, neighbor)
 
-    def creates_large_open_area(self, cell, neighbor):
+    def creates_large_open_area(self, cell: int, neighbor: int) -> bool:
         """Check whether removing a wall creates an undesired open area.
 
         The function temporarily removes a wall and checks local 3x3 regions,
@@ -100,7 +100,7 @@ class MazeGenerator:
 
         return result
 
-    def check_3x3_around(self, cell):
+    def check_3x3_around(self, cell: int) -> bool:
         """Scan nearby coordinates and detect whether any 3x3
         area is fully open.
 
@@ -152,7 +152,7 @@ class MazeGenerator:
             maze_str += format(cell, '04b')
         return maze_str
 
-    def put_42(self):
+    def put_42(self) -> None:
         """Mark a fixed "42" pattern area in the center of the maze.
 
         Cells in this pattern are preserved and excluded from generation steps.
@@ -182,7 +182,7 @@ class MazeGenerator:
         self.pattern.add(center + 2 - self.width * 2)
         self.pattern.add(center + 1 - self.width * 2)
 
-    def print_maze(self):
+    def print_maze(self) -> None:
         """Print the current numeric maze map to stdout for debugging."""
         for y in range(self.height):
             for x in range(self.width):
@@ -207,7 +207,7 @@ class MazeGenerator:
             file.write(f"{entry_x},{entry_y}\n")
             file.write(f"{exit_x},{exit_y}\n")
 
-    def wilson(self):
+    def wilson(self) -> None:
         """Generate maze corridors using Wilson's algorithm.
 
         Starts from the entry point and repeatedly performs loop-erased random
@@ -231,7 +231,7 @@ class MazeGenerator:
 
             self.remaining.discard(path[-1])
 
-    def random_walk(self, start: int) -> List:
+    def random_walk(self, start: int) -> List[int]:
         """Run a random walk until it reaches the carved region.
 
         During the walk, loops are removed to keep the path simple.
@@ -330,4 +330,4 @@ class MazeGenerator:
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
     maze = Maze(150, 150, (0, 0), (99, 99), True)
-    print(len(maze_gen.cerate_maze(maze, 1)))
+    print(len(maze_gen.cerate_maze(maze, "test.txt", 1)))

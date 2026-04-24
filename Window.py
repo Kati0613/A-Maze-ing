@@ -34,6 +34,7 @@ class Window():
                  maze_height: int = 10, entry: Tuple[int, int] = (0, 0),
                  exit: Tuple[int, int] = (10, 10),
                  path: List[Tuple[int, int]] = [],
+                 file_name: str = "maze.txt",
                  ) -> None:
         """Initialize the main application window and all interface elements.
 
@@ -65,6 +66,7 @@ class Window():
 
         self.output = output
         self.path_show = True
+        self.file_name = file_name
 
         self.path = path
         self.generator = generator
@@ -167,8 +169,8 @@ class Window():
                 self.button_size.word = str(self.maze.size)
                 self.button_size.put_str()
             solver = MazeSolver()
-            self.maze.output = maze_gen.cerate_maze(maze)
-            self.maze.path = solver.solve_maze(maze)
+            self.maze.output = maze_gen.cerate_maze(maze, self.file_name)
+            self.maze.path = solver.solve_maze(maze, self.file_name)
             self.maze.gen_overlfow = solver.solve_maze_steps(maze)
             self.redraw_animated()
         elif key == 65362:
@@ -306,9 +308,10 @@ class Window():
 if __name__ == "__main__":
     maze_gen = MazeGenerator()
     maze = Maze2(20, 20, (0, 0), (9, 9), False)
-    output = maze_gen.cerate_maze(maze, 1)
+    output = maze_gen.cerate_maze(maze, "test.txt", 1)
     solver = MazeSolver()
     window = Window(output, solver.solve_maze_steps(maze), maze.width,
-                    maze.height, maze.entry, maze.exit, solver.solve_maze(maze)
+                    maze.height, maze.entry, maze.exit,
+                    solver.solve_maze(maze, "test.txt"), "test.txt",
                     )
     window.show()
