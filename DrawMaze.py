@@ -1,6 +1,7 @@
-from typing import Any, Tuple, List, Iterator
+from typing import Any, Tuple, List, Iterator, Generator
 from mlx import Mlx
 from random import randint
+
 
 class Maze():
     """Represents a drawable maze rendered inside an MLX window.
@@ -27,9 +28,29 @@ class Maze():
         max (int): Maximum allowed cell size for rendering.
     """
     @staticmethod
-    def generator(tab):
+    def generator(tab: Any) -> Generator[Any, None, None]:
+        """
+        Generates elements from the given iterable one by one.
+
+        This static method takes an iterable object and yields each of its
+        elements sequentially, allowing lazy iteration over the provided data.
+
+        Args:
+            tab (Any):
+                An iterable collection containing elements to be yielded.
+
+        Yields:
+            Any:
+                The next element from the iterable.
+
+        Returns:
+            Any:
+                A generator object that produces elements from `tab`.
+    """
         for element in tab:
             yield element
+            for element in tab:
+                yield element
 
     def __init__(self, mlx: Mlx, ptr: Any, window: Any, output: str,
                  width: int, height: int, entry: Tuple[int, int],
@@ -144,12 +165,14 @@ class Maze():
             pixel = self.output[j:j+4]
             if pixel[3] == "1":  # gorna
                 start = y * self.cell * self.line_length + 4 * x * self.cell
-                end = y * self.cell * self.line_length + (self.cell * x + self.cell + 1) * 4
+                end = y * self.cell * self.line_length + (self.cell * x +
+                                                          self.cell + 1) * 4
                 self.image_data[
                     start: end
                      ] = self.size * color
             if pixel[1] == "1":
-                start = (y + 1) * self.cell * self.line_length + x * self.cell * 4
+                start = (y + 1
+                         ) * self.cell * self.line_length + x * self.cell * 4
                 end = (
                     (y + 1) * self.cell * self.line_length +
                     (self.cell * x + self.cell + 1) * 4
@@ -159,15 +182,18 @@ class Maze():
                      ] = self.size * color
             if pixel[0] == "1":
                 for i in range(0, self.cell):
-                    start = (y * self.cell + i) * self.line_length + x * self.cell * 4
-                    end = (y * self.cell + i) * self.line_length + x*self.cell * 4 + 4
+                    start = (y * self.cell + i
+                             ) * self.line_length + x * self.cell * 4
+                    end = (y * self.cell + i
+                           ) * self.line_length + x*self.cell * 4 + 4
                     self.image_data[
                             start: end
                             ] = color
             if pixel[2] == "1":
                 for i in range(0, self.cell):
                     start = (
-                        (y * self.cell + i) * self.line_length + (x + 1) * 4 * self.cell
+                        (y * self.cell + i
+                         ) * self.line_length + (x + 1) * 4 * self.cell
                     )
                     end = (
                         (y * self.cell + i) * self.line_length
@@ -235,7 +261,6 @@ class Maze():
         Returns:
             None
         """
-        #cell = self.size - 1
 
         if color:
             self.color_42 = color
@@ -253,12 +278,33 @@ class Maze():
                 end = row + base_x + (self.cell - 1) * 4
 
                 self.image_data[start:end] = (self.cell - 3) * self.color_42
-    
-    def clear_cells(self):
+
+    def clear_cells(self) -> None:
+        """
+        Clears the interior of maze cells while preserving entry, exit,
+        and protected cells stored in `fourtytwo`.
+
+        This method iterates through all maze cells and fills their inner
+        area with black pixels, excluding:
+        - the entry cell,
+        - the exit cell,
+        - cells listed in `fourtytwo`.
+
+        The cell borders remain unchanged, so the maze structure is preserved.
+        After clearing the cells, the updated maze image is rendered
+        to the window.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         for y in range(self.height):
             for x in range(self.width):
 
-                if (x, y) == self.entry or (x, y) == self.exit or [x, y] in self.fourtytwo:
+                if ((x, y) == self.entry
+                        or (x, y) == self.exit or [x, y] in self.fourtytwo):
                     continue
 
                 cell_x = x * self.cell
@@ -351,11 +397,44 @@ class Maze():
         self.put_maze_to_window()
 
     def reset_animation(self):
+        """
+        Resets the animation state for path visualization.
+
+        This method initializes the generator for animated path drawing,
+        excluding the entry and exit points from the path. It also enables
+        both generation and path animation flags so the full animation
+        sequence can start again.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         self.gen = self.generator(self.path[1:-1])
         self.animated_generation = True
         self.animating = True
 
     def draw_animated_path(self, param):
+        """
+        Draws the animated path traversal inside the maze.
+
+        This method processes the next coordinate from the path generator
+        and colors the corresponding cell with a pink shade to visualize
+        the solved path. The animation continues until all path cells are
+        processed, after which animation is stopped.
+
+        The method only runs when path animation is active and maze
+        generation animation has already finished.
+
+        Args:
+            param:
+                Optional parameter passed by the animation system.
+                It is not used directly in this method.
+
+        Returns:
+            None
+        """
         if self.animating and not self.animated_generation:
             try:
                 coor = next(self.gen)
@@ -374,8 +453,27 @@ class Maze():
             except StopIteration:
                 self.animating = False
         return
-    
+
     def draw_animated_generation(self, param):
+        """
+        Draws the animated path generation process.
+
+        This method retrieves the next group of cells from the generation
+        generator and fills them with randomly generated colors to visualize
+        path creation. Entry and exit cells are skipped to preserve their
+        original appearance.
+
+        Once generation is complete, all temporary colors are cleared using
+        `clear_cells()`, and generation animation is disabled.
+
+        Args:
+            param:
+                Optional parameter passed by the animation system.
+                It is not used directly in this method.
+
+        Returns:
+            None
+        """
         if self.animated_generation:
             try:
                 colored = next(self.gen_overlfow)
@@ -388,10 +486,11 @@ class Maze():
                     y = coor[1] * self.cell
                     x = coor[0] * self.cell
 
-                    color = bytes([randint(0,255), randint(0,255), randint(0, 255), 105])
+                    color = bytes([randint(0, 255), randint(0, 255),
+                                   randint(0, 255), 105])
 
-                    if color == bytes([0,0,0,255]):
-                        color = bytes([0,0,255,255])
+                    if color == bytes([0, 0, 0, 255]):
+                        color = bytes([0, 0, 255, 255])
 
                     for i in range(1, self.cell - 1):
                         self.image_data[
@@ -406,8 +505,3 @@ class Maze():
                     self.clear_cells()
                 self.animated_generation = False
         return
-
-# row = base_y + i * self.line_length
-
-#                 start = row + base_x + 2 * 4
-#                 end = row + base_x + (self.cell - 1) * 4

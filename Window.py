@@ -222,7 +222,7 @@ class Window():
         """Clear and redraw the maze using the current settings.
 
         The maze is redrawn with the currently selected color and the path
-        is rendered afterward.
+        is rendered afterward. Path is re-animated.
 
         Returns:
             None
@@ -231,16 +231,32 @@ class Window():
         self.maze.draw_maze(self.color)
         if self.path_show:
             self.maze.reset_animation()
-    
-    def animation(self, param):
+
+    def animation(self, param: None = None) -> None:
+        """
+            Animates the maze generation process and the pathfinding 
+            visualization.
+
+            This method first displays the animated maze generation sequence,
+            and then shows the animated path traversal using the same optional
+            parameter.
+
+            Args:
+                param (None, optional):
+                    Optional parameter passed to both animation methods.
+                    Defaults to None.
+
+            Returns:
+                None
+        """
         self.maze.draw_animated_generation(param)
         self.maze.draw_animated_path(param)
-    
+
     def redraw(self) -> None:
         """Clear and redraw the maze using the current settings.
 
         The maze is redrawn with the currently selected color and the path
-        is rendered afterward.
+        is rendered afterward. Path is rendared without animation.
 
         Returns:
             None
@@ -292,6 +308,7 @@ if __name__ == "__main__":
     maze = Maze2(20, 20, (0, 0), (9, 9), False)
     output = maze_gen.cerate_maze(maze, 1)
     solver = MazeSolver()
-    window = Window(output, solver.solve_maze_steps(maze), maze.width, maze.height, maze.entry,
-                    maze.exit, solver.solve_maze(maze))
+    window = Window(output, solver.solve_maze_steps(maze), maze.width,
+                    maze.height, maze.entry, maze.exit, solver.solve_maze(maze)
+                    )
     window.show()
