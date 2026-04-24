@@ -60,7 +60,7 @@ class Window():
         self.color = bytes([255, 255, 255, 255])
 
         self.window = self.mlx.mlx_new_window(
-            self.ptr, width, height, "whoores"
+            self.ptr, width, height, "A-maze-ing"
             )
 
         self.output = output
