@@ -8,12 +8,12 @@ BIN = $(VENV)/bin
 install:
 	$(PYTHON) -m venv $(VENV)
 	$(BIN)/$(PIP) install --upgrade pip
-	$(BIN)/$(PIP) install flake8 mypy mlx-2.2-py3-none-any.whl setuptools wheel
+	$(BIN)/$(PIP) install flake8 mypy mlx-2.2-py3-none-any.whl build setuptools wheel
 	@if [ -f requirements.txt ]; then $(BIN)/$(PIP) install -r requirements.txt; fi
 
 # Build the mazegen package
 build:
-	$(BIN)/$(PYTHON) setup.py sdist bdist_wheel
+	$(BIN)/$(PYTHON) -m build --sdist --wheel
 	mv dist/*.whl .
 	mv dist/*.tar.gz .
 	rm -rf dist build *.egg-info

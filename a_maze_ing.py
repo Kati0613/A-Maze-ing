@@ -1,12 +1,9 @@
 from typing import Tuple
-
-from Window import Window
 from mazegen.Maze import Maze as Maze2
 from mazegen.MazeGenerator import MazeGenerator
 from mazegen.MazeSolver import MazeSolver
-from mazegen.Maze import Maze as Maze2
 from Window import Window
-from typing import Tuple
+
 
 def load_config(
     file_name: str,
@@ -81,7 +78,7 @@ if __name__ == "__main__":
     validate_config(width, height, entry, exit, output_file, perfect)
     maze_gen = MazeGenerator()
     maze = Maze2(width, height, entry, exit, perfect)
-    output = maze_gen.cerate_maze(maze,output_file, 1)
+    output = maze_gen.cerate_maze(maze, output_file, 1)
     solver = MazeSolver()
     window = Window(
         output,
