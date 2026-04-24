@@ -6,7 +6,7 @@ class Button():
     """Represents a simple clickable UI button with text inside.
 
     This class creates a rectangular button rendered as an image in the MLX
-    window. It supports displaying text, updating numeric values, and 
+    window. It supports displaying text, updating numeric values, and
     refreshing
     its appearance.
 

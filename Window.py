@@ -234,7 +234,7 @@ class Window():
 
     def animation(self, param: None = None) -> None:
         """
-            Animates the maze generation process and the pathfinding 
+            Animates the maze generation process and the pathfinding
             visualization.
 
             This method first displays the animated maze generation sequence,
