@@ -156,7 +156,6 @@ class Maze():
         self.image_data = self.mlx_img_data[0]
         self.line_length = self.mlx_img_data[2]
 
-        # Szybkie czyszczenie - używamy bytes o tej samej długości
         self.image_data[:] = len(self.image_data) // 4 * bytes([0, 0, 0, 255])
 
         x, y, j = 0, 0, 0
@@ -396,7 +395,7 @@ class Maze():
 
         self.put_maze_to_window()
 
-    def reset_animation(self):
+    def reset_animation(self) -> None:
         """
         Resets the animation state for path visualization.
 
@@ -415,7 +414,7 @@ class Maze():
         self.animated_generation = True
         self.animating = True
 
-    def draw_animated_path(self, param):
+    def draw_animated_path(self, param: None) -> None:
         """
         Draws the animated path traversal inside the maze.
 
@@ -454,7 +453,7 @@ class Maze():
                 self.animating = False
         return
 
-    def draw_animated_generation(self, param):
+    def draw_animated_generation(self, param: None) -> None:
         """
         Draws the animated path generation process.
 
