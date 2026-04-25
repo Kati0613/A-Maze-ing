@@ -61,6 +61,15 @@ Wilson's algorithm was chosen because it produces unbiased perfect mazes and
 fits well with the cell-based wall representation used in this project. The
 implementation is also easy to extend with extra rules, such as the reserved
 "42" pattern and the optional imperfect-mode pass.
+It also has predictable properties that are important for this project:
+
+- all cells are connected,
+- in perfect mode there is exactly one path between entry and exit,
+- generation quality does not depend on a directional carving bias.
+
+In practice, this gives repeatable, clean maze structures that are easy to
+visualize, solve with BFS, and safely modify later (for example by adding
+controlled extra openings in non-perfect mode).
 
 ## Reusable part
 

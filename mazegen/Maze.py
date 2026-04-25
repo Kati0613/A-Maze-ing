@@ -22,8 +22,35 @@ class Maze:
                 (single path between cells).
 
         Raises:
-            ValueError: If entry or exit are outside maze boundaries.
+            TypeError: If provided argument types are invalid.
+            ValueError: If provided values are out of allowed range.
         """
+        if type(width) is not int:
+            raise TypeError("Width must be an integer")
+        if type(height) is not int:
+            raise TypeError("Height must be an integer")
+        if width < 10 or width > 150:
+            raise ValueError("Width must be between 10 and 150")
+        if height < 10 or height > 150:
+            raise ValueError("Height must be between 10 and 150")
+
+        if not isinstance(entry, tuple) or len(entry) != 2:
+            raise TypeError("Entry must be a tuple of two integers")
+        if not isinstance(exit, tuple) or len(exit) != 2:
+            raise TypeError("Exit must be a tuple of two integers")
+        if type(entry[0]) is not int or type(entry[1]) is not int:
+            raise TypeError("Entry coordinates must be integers")
+        if type(exit[0]) is not int or type(exit[1]) is not int:
+            raise TypeError("Exit coordinates must be integers")
+        if entry[0] < 0 or entry[1] < 0:
+            raise ValueError("Entry coordinates cannot be negative")
+        if exit[0] < 0 or exit[1] < 0:
+            raise ValueError("Exit coordinates cannot be negative")
+        if entry == exit:
+            raise ValueError("Entry and exit cannot be the same")
+        if type(is_perfect) is not bool:
+            raise TypeError("is_perfect must be a boolean")
+
         self.width = width
         self.height = height
         self.entry = entry

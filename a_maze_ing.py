@@ -19,6 +19,11 @@ def load_config(
                 if not line or line.startswith("#"):
                     continue
 
+                if "=" not in line:
+                    raise ValueError(
+                        f"Invalid config line {line_number}"
+                    )
+
                 key, value = line.split("=", 1)
                 key = key.strip()
                 value = value.strip()
@@ -32,7 +37,7 @@ def load_config(
                         f"Missing value for key '{key}' at line {line_number}"
                     )
 
-                config[key] = value
+                config[key.upper()] = value
     except FileNotFoundError as exc:
         raise FileNotFoundError(f"Config file not found: {file_name}") from exc
 
@@ -126,7 +131,7 @@ if __name__ == "__main__":
         )
         maze_gen = MazeGenerator()
         maze = Maze2(width, height, entry, exit, perfect)
-        output = maze_gen.cerate_maze(maze, output_file)
+        output = maze_gen.cerate_maze(maze, output_file, seed=42)
         solver = MazeSolver()
         window = Window(
             output,
