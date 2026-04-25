@@ -37,6 +37,10 @@ class MazeGenerator:
         self.pattern: Set[int] = set()
 
         self.put_42()
+        if self.entry in self.pattern or self.exit in self.pattern:
+            raise ValueError(
+                'Entry and exit cannot be inside the "42" pattern'
+            )
         self.wilson()
         if not self.is_perfect:
             self.make_imperfect(0.1)
@@ -157,6 +161,14 @@ class MazeGenerator:
 
         Cells in this pattern are preserved and excluded from generation steps.
         """
+        # Pattern "42" occupies up to +/-3 columns and +/-2 rows from center.
+        if self.width < 7 or self.height < 5:
+            print(
+                f'Error: maze too small for "42" pattern '
+                f"(minimum size is 9x9, got {self.width}x{self.height})."
+            )
+            return
+
         x = self.width // 2
         y = self.height // 2
 
@@ -205,7 +217,7 @@ class MazeGenerator:
             exit_y = self.exit // self.width
             file.write("\n")
             file.write(f"{entry_x},{entry_y}\n")
-            file.write(f"{exit_x},{exit_y}\n")
+            file.write(f"{exit_x + 1},{exit_y + 1}\n")
 
     def wilson(self) -> None:
         """Generate maze corridors using Wilson's algorithm.

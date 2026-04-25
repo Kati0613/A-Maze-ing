@@ -169,6 +169,7 @@ class Window():
                 self.button_size.word = str(self.maze.size)
                 self.button_size.put_str()
             solver = MazeSolver()
+            maze_gen = MazeGenerator()
             self.maze.output = maze_gen.cerate_maze(maze, self.file_name)
             self.maze.path = solver.solve_maze(maze, self.file_name)
             self.maze.gen_overlfow = solver.solve_maze_steps(maze)
@@ -306,9 +307,9 @@ class Window():
 
 
 if __name__ == "__main__":
-    maze_gen = MazeGenerator()
+    maze_gen1 = MazeGenerator()
     maze = Maze2(20, 20, (0, 0), (9, 9), False)
-    output = maze_gen.cerate_maze(maze, "test.txt", 1)
+    output = maze_gen1.cerate_maze(maze, "test.txt", 1)
     solver = MazeSolver()
     window = Window(output, solver.solve_maze_steps(maze), maze.width,
                     maze.height, maze.entry, maze.exit,

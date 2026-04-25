@@ -1,12 +1,12 @@
 #Maze width (number of cells) 
-WIDTH= 800
+WIDTH=20
 #Maze height 
-HEIGHT=800
+HEIGHT=20
 #Entry coordinates (x,y)
 ENTRY=0,0
 #Exit coordinates (x,y)
-EXIT=799,799
+EXIT=19,19
 #Output filename
 OUTPUT_FILE=maze.txt
 #Is the maze perfect?(only one path)
-PERFECT=true
+PERFECT=True
