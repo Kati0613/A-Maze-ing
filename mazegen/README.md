@@ -36,10 +36,10 @@ maze = Maze(
 )
 
 generator = MazeGenerator()
-bitstring = generator.cerate_maze(maze, seed=42)
+bitstring = generator.cerate_maze(maze, file_name="maze.txt", seed=42)
 
 solver = MazeSolver()
-path = solver.solve_maze(maze)
+path = solver.solve_maze(maze, file_name="maze.txt")
 
 print("Bitstring length:", len(bitstring))
 print("Path length:", len(path))
@@ -59,16 +59,18 @@ Parameters:
 - `exit: tuple[int, int]` - end coordinate `(x, y)`
 - `is_perfect: bool` - whether the maze should be perfect (no loops)
 
-### `MazeGenerator.cerate_maze(maze, seed=None)`
+### `MazeGenerator.cerate_maze(maze, file_name, seed=None)`
 
 Parameters:
 - `maze: Maze` - maze configuration object to populate
+- `file_name: str` - destination file where maze data is written
 - `seed: int | None` - optional random seed used for deterministic output
 
-### `MazeSolver.solve_maze(maze)`
+### `MazeSolver.solve_maze(maze, file_name)`
 
 Parameters:
 - `maze: Maze` - maze instance with `map` already filled by the generator
+- `file_name: str` - output file path where path directions are appended
 
 ### `MazeSolver.solve_maze_steps(maze)`
 
@@ -94,9 +96,10 @@ A set bit means that a wall exists.
 ### `MazeGenerator`
 
 Methods:
-- `cerate_maze(maze, seed=None) -> str`
+- `cerate_maze(maze, file_name, seed=None) -> str`
   - generates the maze
   - fills `maze.map`
+  - writes maze data to the provided output file path
   - returns a bitstring: concatenation of 4-bit wall representations
 
 Note:
@@ -105,7 +108,7 @@ Note:
 ### `MazeSolver`
 
 Methods:
-- `solve_maze(maze) -> list[tuple[int, int]]`
+- `solve_maze(maze, file_name) -> list[tuple[int, int]]`
   - returns the shortest path from entry to exit
 - `solve_maze_steps(maze) -> iterator[list[tuple[int, int]]]`
   - returns incremental BFS steps (useful for animation)
@@ -113,7 +116,8 @@ Methods:
 ## Limitations
 
 - Entry and exit must be inside maze bounds.
-- The current implementation writes an additional helper file `output_test.txt` during generation.
+- Generation writes output to the `file_name` path passed to `cerate_maze`.
+- If entry or exit is inside the reserved "42" pattern, generation raises `ValueError`.
 
 ## Authors
 

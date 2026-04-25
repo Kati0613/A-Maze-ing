@@ -24,7 +24,7 @@ It follows a simple `KEY=VALUE` format, with one setting per line.
 | ENTRY       | Entry coordinates (x,y)              | ENTRY=0,0          |
 | EXIT        | Exit coordinates (x,y)               | EXIT=19,14         |
 | OUTPUT_FILE | Output filename                      | OUTPUT_FILE=maze.txt |
-| PERFECT     | Whether the maze is perfect (True/False) | PERFECT=True   |
+| PERFECT     | Whether the maze is perfect (true/false) | PERFECT=true   |
 
 ### Example configuration
 
@@ -34,8 +34,7 @@ HEIGHT=15
 ENTRY=0,0
 EXIT=19,14
 OUTPUT_FILE=maze.txt
-PERFECT=True
-SEED=42
+PERFECT=true
 ```
 
 ## Maze generation algorithm
