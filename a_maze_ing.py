@@ -157,7 +157,7 @@ if __name__ == "__main__":
         )
         maze_gen = MazeGenerator()
         maze = Maze2(width, height, entry, exit, perfect)
-        output = maze_gen.cerate_maze(maze, output_file, seed=42)
+        output = maze_gen.cerate_maze(maze, output_file)
         solver = MazeSolver()
         window = Window(
             output,
