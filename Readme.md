@@ -156,3 +156,7 @@ The project uses a Makefile to simplify common development tasks such as environ
 
 ## Resources
 AI was used as a supporting tool during the development of the project, mainly for improving code quality and documentation.
+
+The descriptions of the algorithms used in this project were based on general references and publicly available documentation.
+- [Maze generation algorithm](https://en.wikipedia.org/wiki/Maze_generation_algorithm)
+- [Breadth-first search](https://en.wikipedia.org/wiki/Breadth-first_search)
