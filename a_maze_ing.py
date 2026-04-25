@@ -1,3 +1,5 @@
+"""Command-line entry point for loading maze config and running the app."""
+
 from typing import Tuple
 from mazegen.Maze import Maze as Maze2
 from mazegen.MazeGenerator import MazeGenerator
@@ -7,13 +9,21 @@ import sys
 from mazegen.Maze import is_valid_maze_dimension
 
 
-# def _is_valid_maze_dimension(value: int) -> bool:
-#     return 2 <= value <= 6 or 9 <= value <= 150
-
-
 def load_config(
     file_name: str,
 ) -> Tuple[int, int, Tuple[int, int], Tuple[int, int], str, bool]:
+    """Load and parse a maze configuration file.
+
+    Args:
+        file_name: Path to the config file.
+
+    Returns:
+        Parsed width, height, entry, exit, output file and perfect flag.
+
+    Raises:
+        FileNotFoundError: If the config file does not exist.
+        ValueError: If the file content is malformed.
+    """
     config = {}
 
     try:
@@ -103,6 +113,19 @@ def validate_config(
     output_file: str,
     perfect: bool,
 ) -> None:
+    """Validate maze settings before generation.
+
+    Args:
+        width: Maze width in cells.
+        height: Maze height in cells.
+        entry: Entry coordinate as (x, y).
+        exit: Exit coordinate as (x, y).
+        output_file: Output file path.
+        perfect: Whether the maze should be perfect.
+
+    Raises:
+        ValueError: If any setting is invalid.
+    """
     if not is_valid_maze_dimension(width):
         raise ValueError("Width must be in range 2-150")
     if not is_valid_maze_dimension(height):

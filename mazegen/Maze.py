@@ -2,10 +2,13 @@ from typing import List, Tuple
 
 
 def is_valid_maze_dimension(value: int) -> bool:
+    """Return whether a maze dimension is allowed by the application."""
     return 2 <= value <= 150
 
 
 class Maze:
+    """Maze data model storing dimensions, endpoints and wall map."""
+
     def __init__(
         self,
         width: int,
