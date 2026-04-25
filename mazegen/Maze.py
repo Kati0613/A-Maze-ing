@@ -1,6 +1,10 @@
 from typing import List, Tuple
 
 
+def is_valid_maze_dimension(value: int) -> bool:
+    return 2 <= value <= 150
+
+
 class Maze:
     def __init__(
         self,
@@ -29,10 +33,10 @@ class Maze:
             raise TypeError("Width must be an integer")
         if type(height) is not int:
             raise TypeError("Height must be an integer")
-        if width < 10 or width > 150:
-            raise ValueError("Width must be between 10 and 150")
-        if height < 10 or height > 150:
-            raise ValueError("Height must be between 10 and 150")
+        if not is_valid_maze_dimension(width):
+            raise ValueError("Width must be in range 2-150")
+        if not is_valid_maze_dimension(height):
+            raise ValueError("Height must be in range 2-150")
 
         if not isinstance(entry, tuple) or len(entry) != 2:
             raise TypeError("Entry must be a tuple of two integers")

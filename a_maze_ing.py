@@ -4,6 +4,11 @@ from mazegen.MazeGenerator import MazeGenerator
 from mazegen.MazeSolver import MazeSolver
 from Window import Window
 import sys
+from mazegen.Maze import is_valid_maze_dimension
+
+
+# def _is_valid_maze_dimension(value: int) -> bool:
+#     return 2 <= value <= 6 or 9 <= value <= 150
 
 
 def load_config(
@@ -98,10 +103,10 @@ def validate_config(
     output_file: str,
     perfect: bool,
 ) -> None:
-    # if width < 10 or width > 150:
-    #     raise ValueError("Width must be between 10 and 150")
-    # if height < 10 or height > 150:
-    #     raise ValueError("Height must be between 10 and 150")
+    if not is_valid_maze_dimension(width):
+        raise ValueError("Width must be in range 2-150")
+    if not is_valid_maze_dimension(height):
+        raise ValueError("Height must be in range 2-150")
     if entry[0] < 0 or entry[1] < 0:
         raise ValueError("Entry coordinates cannot be negative")
     if exit[0] < 0 or exit[1] < 0:
