@@ -40,9 +40,42 @@ SEED=42
 
 ## Maze generation algorithm
 
+The maze is generated using a Wilson-style loop-erased random walk.
+The generator starts from the entry cell and gradually connects the rest of
+the maze by walking from unvisited cells until they reach the carved region.
+Each walk is simplified by removing loops, which keeps the final structure
+connected and avoids cycles in perfect mode.
+
+Before the algorithm starts, the generator reserves a fixed "42" pattern in
+the center of the maze when the maze is large enough. Those cells are excluded
+from the random-walk process so the pattern remains visible in the final map.
+If the maze is too small to fit the pattern, the generator prints an error
+message and skips the pattern.
+
+When the maze is marked as non-perfect, the generator performs an additional
+pass that removes some extra walls with a small probability. This creates
+loops while still avoiding large open 3x3 areas.
+
 ## Algorithm choice
 
+Wilson's algorithm was chosen because it produces unbiased perfect mazes and
+fits well with the cell-based wall representation used in this project. The
+implementation is also easy to extend with extra rules, such as the reserved
+"42" pattern and the optional imperfect-mode pass.
+
 ## Reusable part
+
+The reusable part of the project is the `mazegen` package. It provides the
+maze model, the generator, and the solver as separate components, so the same
+logic can be used from the CLI entry point, the visualizer, or any other
+Python code.
+
+- `Maze` stores the maze size, entry and exit positions, and the generated map.
+- `MazeGenerator` builds the maze and serializes the wall representation.
+- `MazeSolver` finds the shortest path and step-by-step BFS states.
+
+This separation makes it possible to reuse the generation and solving logic
+without depending on the graphical layer.
 
 ## Display Options
 The project provides a graphical visualization of the maze using MiniLibX (MLX), allowing the user to interact with the generated maze in real time.
