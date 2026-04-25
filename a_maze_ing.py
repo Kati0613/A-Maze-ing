@@ -1,5 +1,3 @@
-"""Command-line entry point for loading maze config and running the app."""
-
 from typing import Tuple
 from mazegen.Maze import Maze as Maze2
 from mazegen.MazeGenerator import MazeGenerator
